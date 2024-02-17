@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  db_tests:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_TESTS_USER}
+      POSTGRES_PASSWORD: ${DB_TESTS_PASSWORD}
+      POSTGRES_DB: ${DB_TESTS_NAME}
+    ports:
+      - ${DB_TESTS_PORT}:5432
+    volumes:
+      - db-tests-data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
+
+volumes:
+  db-data:
+  db-tests-data:
