@@ -57,7 +57,7 @@ export class UserPrismaRepository implements UserRepositoryPort {
         take: limit,
         skip: offset,
         orderBy: {
-          [orderBy.field === true ? 'id' : orderBy.field]: orderBy.param,
+          [orderBy.field === true ? 'createdAt' : orderBy.field]: orderBy.param,
         },
       }),
     ]);
@@ -71,7 +71,18 @@ export class UserPrismaRepository implements UserRepositoryPort {
   }
 
   async delete(entity: UserEntity): Promise<boolean> {
-    const user = await this.prisma.user.delete({ where: { id: entity.id } });
-    return !!user;
+    try {
+      const user = await this.prisma.user.delete({ where: { id: entity.id } });
+      return !!user;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        return false;
+      }
+
+      throw error;
+    }
   }
 }

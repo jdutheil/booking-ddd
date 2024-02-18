@@ -75,4 +75,118 @@ describe('UserPrismaRepository Integration Test', () => {
       expect(hasThrown).toBe(true);
     });
   });
+
+  describe('read tests', () => {
+    let user: UserEntity;
+
+    beforeAll(async () => {
+      await prismaService.user.deleteMany();
+
+      user = await UserEntity.create({
+        email: 'user@mail.com',
+        password: 'password',
+      });
+      await userPrismaRepository.save(user);
+    });
+
+    describe('findOneById', () => {
+      it('should find a user by id', async () => {
+        const foundUser = await userPrismaRepository.findOneById(user.id);
+        expect(foundUser.isSome()).toBe(true);
+        expect(foundUser.unwrap().id).toBe(user.id);
+        expect(foundUser.unwrap().email).toBe(user.email);
+        expect(foundUser.unwrap().hashedPassword).toBe(user.hashedPassword);
+      });
+
+      it('should return None if user not found', async () => {
+        const foundUser = await userPrismaRepository.findOneById('invalid-id');
+        expect(foundUser.isNone()).toBe(true);
+      });
+    });
+
+    describe('findOneByEmail', () => {
+      it('should find a user by email', async () => {
+        const foundUser = await userPrismaRepository.findOneByEmail(user.email);
+        expect(foundUser.isSome()).toBe(true);
+        expect(foundUser.unwrap().id).toBe(user.id);
+        expect(foundUser.unwrap().email).toBe(user.email);
+        expect(foundUser.unwrap().hashedPassword).toBe(user.hashedPassword);
+      });
+
+      it('should return None if user not found', async () => {
+        const foundUser =
+          await userPrismaRepository.findOneByEmail('invalid-email');
+        expect(foundUser.isNone()).toBe(true);
+      });
+    });
+
+    describe('findAll', () => {
+      it('should find all users', async () => {
+        const users = await userPrismaRepository.findAll();
+        expect(users.length).toBe(1);
+        expect(users[0].id).toBe(user.id);
+        expect(users[0].email).toBe(user.email);
+        expect(users[0].hashedPassword).toBe(user.hashedPassword);
+      });
+    });
+
+    describe('findAllPaginated', () => {
+      it('should find all users paginated', async () => {
+        const users = await userPrismaRepository.findAllPaginated({
+          limit: 10,
+          page: 1,
+          offset: 0,
+          orderBy: { field: true, param: 'asc' },
+        });
+        expect(users.count).toBe(1);
+        expect(users.limit).toBe(10);
+        expect(users.page).toBe(1);
+        expect(users.data.length).toBe(1);
+        expect(users.data[0].id).toBe(user.id);
+        expect(users.data[0].email).toBe(user.email);
+        expect(users.data[0].hashedPassword).toBe(user.hashedPassword);
+      });
+    });
+
+    afterAll(async () => {
+      await prismaService.user.deleteMany();
+    });
+  });
+
+  describe('delete', () => {
+    let user: UserEntity;
+
+    beforeAll(async () => {
+      await prismaService.user.deleteMany();
+
+      user = await UserEntity.create({
+        email: 'user@mail.com',
+        password: 'password',
+      });
+      await userPrismaRepository.save(user);
+    });
+
+    it('should delete a user', async () => {
+      const userCount = await prismaService.user.count();
+      const deleted = await userPrismaRepository.delete(user);
+      const newUserCount = await prismaService.user.count();
+
+      expect(deleted).toBe(true);
+      expect(newUserCount).toBe(userCount - 1);
+    });
+
+    it('should return false if user not found', async () => {
+      const userCount = await prismaService.user.count();
+      const deleted = await userPrismaRepository.delete(
+        await UserEntity.create({
+          email: 'other@mail.com',
+          password: 'password',
+        }),
+      );
+      const newUserCount = await prismaService.user.count();
+
+      expect(deleted).toBe(false);
+      expect(newUserCount).toBe(userCount);
+    });
+  });
 });
