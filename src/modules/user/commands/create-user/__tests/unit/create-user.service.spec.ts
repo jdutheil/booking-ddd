@@ -41,7 +41,7 @@ describe('CreateUserService Unit Tests', () => {
     // TODO : Test get user by id
   });
 
-  it('should throw an error if the email is already used', async () => {
+  it('should return an error if the email is already used', async () => {
     const userDatas = new CreateUserCommand({
       email: 'test@gmail.com',
       password: 'password',
