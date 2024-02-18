@@ -1,4 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AggregateID } from '@src/libs/ddd';
+import { UserAlreadyExistsError } from '@src/modules/user/domain/user.errors';
+import { Result } from 'oxide.ts';
 import { CreateUserCommand } from '../../create-user.command';
 import { CreateUserService } from '../../create-user.service';
 
@@ -23,10 +26,23 @@ describe('CreateUserService Unit Tests', () => {
       password: 'password',
     });
 
-    const user = await service.execute(userDatas);
+    const user = (await service.execute(userDatas)).unwrap();
 
     expect(user).toBeDefined();
-    expect(user.id).toBeDefined();
-    expect(user.email).toBe(userDatas.email);
+    // Test get user by id
+  });
+
+  it('should throw an error if the email is already used', async () => {
+    const userDatas = new CreateUserCommand({
+      email: 'test@gmail.com',
+      password: 'password',
+    });
+
+    await service.execute(userDatas);
+
+    const result: Result<AggregateID, UserAlreadyExistsError> =
+      await service.execute(userDatas);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(UserAlreadyExistsError);
   });
 });
