@@ -4,7 +4,10 @@ import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { Paginated, PaginatedQueryParams } from '@src/libs/ddd';
 import { None, Option, Some } from 'oxide.ts';
 import { UserEntity } from '../domain/user.entity';
-import { UserAlreadyExistsError } from '../domain/user.errors';
+import {
+  UserAlreadyExistsError,
+  UserNotFoundError,
+} from '../domain/user.errors';
 import { UserMapper } from '../domain/user.mapper';
 import { UserRepositoryPort } from './user.repository.port';
 
@@ -25,7 +28,7 @@ export class UserPrismaRepository implements UserRepositoryPort {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new UserAlreadyExistsError();
+        throw new UserAlreadyExistsError(error);
       }
 
       throw error;
@@ -79,7 +82,7 @@ export class UserPrismaRepository implements UserRepositoryPort {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2025'
       ) {
-        return false;
+        throw new UserNotFoundError(error);
       }
 
       throw error;

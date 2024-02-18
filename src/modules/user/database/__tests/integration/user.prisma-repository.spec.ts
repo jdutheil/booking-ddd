@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaModule } from '@src/infrastructure/prisma/prisma.module';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { UserEntity } from '@src/modules/user/domain/user.entity';
-import { UserAlreadyExistsError } from '@src/modules/user/domain/user.errors';
+import {
+  UserAlreadyExistsError,
+  UserNotFoundError,
+} from '@src/modules/user/domain/user.errors';
 import { UserMapper } from '@src/modules/user/domain/user.mapper';
 import { UserPrismaRepository } from '../../user.prisma-repository';
 
@@ -175,18 +178,21 @@ describe('UserPrismaRepository Integration Test', () => {
       expect(newUserCount).toBe(userCount - 1);
     });
 
-    it('should return false if user not found', async () => {
-      const userCount = await prismaService.user.count();
-      const deleted = await userPrismaRepository.delete(
-        await UserEntity.create({
-          email: 'other@mail.com',
-          password: 'password',
-        }),
-      );
-      const newUserCount = await prismaService.user.count();
-
-      expect(deleted).toBe(false);
-      expect(newUserCount).toBe(userCount);
+    it('should throw UserNotFound if user not found', async () => {
+      let hasThrown = false;
+      try {
+        await userPrismaRepository.delete(
+          await UserEntity.create({
+            email: 'other@mail.com',
+            password: 'password',
+          }),
+        );
+      } catch (error: any) {
+        hasThrown = true;
+        expect(error instanceof UserNotFoundError).toBe(true);
+        expect(error.message).toBe(UserNotFoundError.message);
+      }
+      expect(hasThrown).toBe(true);
     });
   });
 });
