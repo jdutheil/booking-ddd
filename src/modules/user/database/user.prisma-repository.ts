@@ -1,21 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { Paginated, PaginatedQueryParams } from '@src/libs/ddd';
 import { None, Option, Some } from 'oxide.ts';
-import { z } from 'zod';
 import { UserEntity } from '../domain/user.entity';
+import { UserAlreadyExistsError } from '../domain/user.errors';
 import { UserMapper } from '../domain/user.mapper';
 import { UserRepositoryPort } from './user.repository.port';
-
-export const userSchema = z.object({
-  id: z.string().uuid(),
-  createdAt: z.preprocess((val: any) => new Date(val), z.date()),
-  updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
-  email: z.string().email(),
-  hashedPassword: z.string(),
-});
-
-export type UserModel = z.infer<typeof userSchema>;
 
 @Injectable()
 export class UserPrismaRepository implements UserRepositoryPort {
@@ -29,7 +20,16 @@ export class UserPrismaRepository implements UserRepositoryPort {
     const records = entities.map((entity) => this.mapper.toPersistence(entity));
     try {
       await this.prisma.user.createMany({ data: records });
-    } catch (error: any) {}
+    } catch (error: any) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new UserAlreadyExistsError();
+      }
+
+      throw error;
+    }
   }
 
   async findOneById(id: string): Promise<Option<UserEntity>> {
