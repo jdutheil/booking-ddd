@@ -29,4 +29,8 @@ export class UserEntity extends Entity<UserProps> {
   get email(): string {
     return this._props.email;
   }
+
+  get hashedPassword(): string {
+    return this._props.hashedPassword;
+  }
 }

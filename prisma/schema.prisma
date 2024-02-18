@@ -12,6 +12,20 @@ datasource db {
 
 model User {
   id String @id @default(uuid())
+  createdAt DateTime 
+  updatedAt DateTime 
   email String @unique
   hashedPassword String
+  contacts Contact[]
+}
+
+model Contact {
+  id String @id @default(uuid())
+  createdAt DateTime
+  updatedAt DateTime
+  name String
+  email String
+  phone String
+  user User @relation(fields: [userId], references: [id])
+  userId String
 }

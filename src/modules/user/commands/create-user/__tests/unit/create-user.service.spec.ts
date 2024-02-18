@@ -29,7 +29,7 @@ describe('CreateUserService Unit Tests', () => {
     const user = (await service.execute(userDatas)).unwrap();
 
     expect(user).toBeDefined();
-    // Test get user by id
+    // TODO : Test get user by id
   });
 
   it('should throw an error if the email is already used', async () => {
