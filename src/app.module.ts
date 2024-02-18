@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { UserModule } from '@src/modules/user/user.module';
 
 @Module({
   imports: [
@@ -8,6 +9,8 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
+    UserModule,
   ],
   controllers: [],
   providers: [],
