@@ -20,6 +20,10 @@ export class UserEntity extends Entity<UserProps> {
     return argon2.hash(password);
   }
 
+  public async comparePassword(password: string): Promise<boolean> {
+    return argon2.verify(this._props.hashedPassword, password);
+  }
+
   validate(): void {}
 
   get email(): string {

@@ -15,6 +15,9 @@ describe('UserEntity', () => {
       expect(user.createdAt).toBeDefined();
       expect(user.updatedAt).toBeDefined();
       expect(user.email).toBe(createUserProps.email);
+      await expect(
+        user.comparePassword(createUserProps.password),
+      ).resolves.toBe(true);
     });
   });
 });
