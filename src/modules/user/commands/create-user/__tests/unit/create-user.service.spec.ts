@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AggregateID } from '@src/libs/ddd';
+import { UserInMemoryRepository } from '@src/modules/user/database/user.in-memory-repository';
+import { USER_REPOSITORY } from '@src/modules/user/database/user.repository.port';
 import { UserAlreadyExistsError } from '@src/modules/user/domain/user.errors';
 import { Result } from 'oxide.ts';
 import { CreateUserCommand } from '../../create-user.command';
@@ -10,7 +12,14 @@ describe('CreateUserService Unit Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CreateUserService],
+      providers: [
+        {
+          provide: USER_REPOSITORY,
+          useClass: UserInMemoryRepository,
+        },
+
+        CreateUserService,
+      ],
     }).compile();
 
     service = module.get<CreateUserService>(CreateUserService);

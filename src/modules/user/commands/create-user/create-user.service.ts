@@ -1,13 +1,21 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AggregateID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
+import {
+  USER_REPOSITORY,
+  UserRepositoryPort,
+} from '../../database/user.repository.port';
 import { UserEntity } from '../../domain/user.entity';
 import { UserAlreadyExistsError } from '../../domain/user.errors';
 import { CreateUserCommand } from './create-user.command';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserService implements ICommandHandler {
-  private users: UserEntity[] = [];
+  constructor(
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: UserRepositoryPort,
+  ) {}
 
   async execute(
     command: CreateUserCommand,
@@ -17,11 +25,16 @@ export class CreateUserService implements ICommandHandler {
       password: command.password,
     });
 
-    if (this.users.find((u) => u.email === user.email)) {
-      return Err(new UserAlreadyExistsError());
+    try {
+      await this.userRepository.save(user);
+    } catch (error) {
+      if (error instanceof UserAlreadyExistsError) {
+        return Err(error);
+      }
+
+      throw error;
     }
 
-    this.users.push(user);
     return Ok(user.id);
   }
 }
