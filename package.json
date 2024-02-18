@@ -29,6 +29,8 @@
     "@nestjs/platform-express": "^10.0.0",
     "@prisma/client": "5.9.1",
     "argon2": "^0.31.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "oxide.ts": "^1.1.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
