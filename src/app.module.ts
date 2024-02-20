@@ -5,7 +5,7 @@ import { UserModule } from '@src/modules/user/user.module';
 @Module({
   imports: [
     // TODO : validate environment with zod
-    // TODO : abstrat config module to not depends on it
+    // TODO : abstract config module to not depends on it
     ConfigModule.forRoot({
       isGlobal: true,
     }),
