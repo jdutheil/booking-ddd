@@ -45,5 +45,15 @@ describe('CreateUser E2E', () => {
         })
         .expect(HttpStatus.BAD_REQUEST);
     });
+
+    it('should throw BAD_REQUEST when password is invalid', async () => {
+      await request(app.getHttpServer())
+        .post(USERS_ROOT)
+        .send({
+          email: VALID_EMAIL,
+          password: INVALID_PASSWORD,
+        })
+        .expect(HttpStatus.BAD_REQUEST);
+    });
   });
 });
