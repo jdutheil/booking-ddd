@@ -15,8 +15,6 @@ export function mainConfig(app: INestApplication) {
   );
 
   app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector), {
-      excludeExtraneousValues: true,
-    }),
+    new ClassSerializerInterceptor(app.get(Reflector), {}),
   );
 }

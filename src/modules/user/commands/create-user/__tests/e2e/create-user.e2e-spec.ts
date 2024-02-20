@@ -55,5 +55,36 @@ describe('CreateUser E2E', () => {
         })
         .expect(HttpStatus.BAD_REQUEST);
     });
+
+    it('should create a user', async () => {
+      const { body } = await request(app.getHttpServer())
+        .post(USERS_ROOT)
+        .send({
+          email: VALID_EMAIL,
+          password: VALID_PASSWORD,
+        })
+        .expect(HttpStatus.CREATED);
+
+      expect(body).toBeDefined();
+      expect(body.id).not.toBeNull();
+    });
+
+    it('should throw CONFLICT when user already exists', async () => {
+      await request(app.getHttpServer())
+        .post(USERS_ROOT)
+        .send({
+          email: VALID_EMAIL,
+          password: VALID_PASSWORD,
+        })
+        .expect(HttpStatus.CREATED);
+
+      await request(app.getHttpServer())
+        .post(USERS_ROOT)
+        .send({
+          email: VALID_EMAIL,
+          password: VALID_PASSWORD,
+        })
+        .expect(HttpStatus.CONFLICT);
+    });
   });
 });
