@@ -1,10 +1,10 @@
 import { Command, CommandProps } from '@src/libs/ddd';
 
-export class CreateUserCommand extends Command {
+export class CreateBookerCommand extends Command {
   readonly email: string;
   readonly password: string;
 
-  constructor(props: CommandProps<CreateUserCommand>) {
+  constructor(props: CommandProps<CreateBookerCommand>) {
     super(props);
     this.email = props.email;
     this.password = props.password;

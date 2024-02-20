@@ -5,13 +5,13 @@ import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { mainConfig } from '@src/main.config';
 import * as request from 'supertest';
 
-const USERS_ROOT = '/v1/users';
-const VALID_EMAIL = 'user@gmail.com';
+const USERS_ROOT = '/v1/bookers';
+const VALID_EMAIL = 'booker@gmail.com';
 const VALID_PASSWORD = '$tr0ngP@ssw0rd';
 const INVALID_EMAIL = 'invalid-email';
 const INVALID_PASSWORD = 'password';
 
-describe('CreateUser E2E', () => {
+describe('CreateBooker E2E', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -32,10 +32,10 @@ describe('CreateUser E2E', () => {
   });
 
   afterEach(async () => {
-    await prisma.user.deleteMany();
+    await prisma.booker.deleteMany();
   });
 
-  describe('Users creation', () => {
+  describe('Bookers creation', () => {
     it('should throw BAD_REQUEST when email is invalid', async () => {
       await request(app.getHttpServer())
         .post(USERS_ROOT)
@@ -56,7 +56,7 @@ describe('CreateUser E2E', () => {
         .expect(HttpStatus.BAD_REQUEST);
     });
 
-    it('should create a user', async () => {
+    it('should create a booker', async () => {
       const { body } = await request(app.getHttpServer())
         .post(USERS_ROOT)
         .send({
@@ -69,7 +69,7 @@ describe('CreateUser E2E', () => {
       expect(body.id).not.toBeNull();
     });
 
-    it('should throw CONFLICT when user already exists', async () => {
+    it('should throw CONFLICT when booker already exists', async () => {
       await request(app.getHttpServer())
         .post(USERS_ROOT)
         .send({

@@ -19,7 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "NODE_ENV=test jest --config ./jest-e2e.js --runInBand",
     "commit": "git add . && git-cz",
-    "prisma:migrate:test": "pnpm prisma migrate deploy"
+    "prisma:migrate:test": "dotenv -e .env.test pnpm prisma migrate deploy"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

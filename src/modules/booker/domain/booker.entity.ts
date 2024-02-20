@@ -1,19 +1,19 @@
 import { AggregateID, Entity } from '@libs/ddd';
 import * as argon2 from 'argon2';
 import { randomUUID } from 'crypto';
-import { CreateUserProps, UserProps } from './user.types';
+import { BookerProps, CreateBookerProps } from './booker.types';
 
-export class UserEntity extends Entity<UserProps> {
+export class BookerEntity extends Entity<BookerProps> {
   protected readonly _id!: AggregateID;
 
-  static async create(create: CreateUserProps): Promise<UserEntity> {
+  static async create(create: CreateBookerProps): Promise<BookerEntity> {
     const id = randomUUID();
-    const props: UserProps = {
+    const props: BookerProps = {
       email: create.email,
       hashedPassword: await this.getHashedPassword(create.password),
     };
-    const user = new UserEntity({ id, props });
-    return user;
+    const booker = new BookerEntity({ id, props });
+    return booker;
   }
 
   private static async getHashedPassword(password: string): Promise<string> {

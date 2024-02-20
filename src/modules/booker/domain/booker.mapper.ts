@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd/mapper.interface';
-import { UserModel, userSchema } from '../database/user.model';
-import { UserEntity } from './user.entity';
+import { BookerModel, bookerSchema } from '../database/booker.model';
+import { BookerEntity } from './booker.entity';
 
 @Injectable()
-export class UserMapper implements Mapper<UserEntity, UserModel> {
-  toDomain(record: UserModel): UserEntity {
-    return new UserEntity({
+export class BookerMapper implements Mapper<BookerEntity, BookerModel> {
+  toDomain(record: BookerModel): BookerEntity {
+    return new BookerEntity({
       id: record.id,
       createdAt: new Date(record.createdAt),
       updatedAt: new Date(record.updatedAt),
@@ -17,8 +17,8 @@ export class UserMapper implements Mapper<UserEntity, UserModel> {
     });
   }
 
-  toPersistence(entity: UserEntity): UserModel {
-    const record: UserModel = {
+  toPersistence(entity: BookerEntity): BookerModel {
+    const record: BookerModel = {
       id: entity.id,
       email: entity.email,
       hashedPassword: entity.hashedPassword,
@@ -26,6 +26,6 @@ export class UserMapper implements Mapper<UserEntity, UserModel> {
       updatedAt: entity.updatedAt,
     };
 
-    return userSchema.parse(record);
+    return bookerSchema.parse(record);
   }
 }

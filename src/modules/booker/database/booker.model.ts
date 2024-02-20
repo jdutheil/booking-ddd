@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const userSchema = z.object({
+export const bookerSchema = z.object({
   id: z.string().uuid(),
   createdAt: z.preprocess((val: any) => new Date(val), z.date()),
   updatedAt: z.preprocess((val: any) => new Date(val), z.date()),
@@ -8,4 +8,4 @@ export const userSchema = z.object({
   hashedPassword: z.string(),
 });
 
-export type UserModel = z.infer<typeof userSchema>;
+export type BookerModel = z.infer<typeof bookerSchema>;

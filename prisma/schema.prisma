@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Booker {
   id String @id @default(uuid())
   createdAt DateTime 
   updatedAt DateTime 
@@ -26,6 +26,6 @@ model Contact {
   name String
   email String
   phone String
-  user User @relation(fields: [userId], references: [id])
-  userId String
+  booker Booker @relation(fields: [bookerId], references: [id])
+  bookerId String
 }

@@ -7,10 +7,10 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateUserRequestDto {
+export class CreateBookerRequestDto {
   @ApiProperty({
     example: 'john.doe@gmail.com',
-    description: 'User email address',
+    description: 'Booker email address',
   })
   @MinLength(5)
   @MaxLength(255)
@@ -20,7 +20,7 @@ export class CreateUserRequestDto {
   @ApiProperty({
     example: '$tr0ngP@ssw0rd',
     description:
-      'User password - must be strong password (min 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character)',
+      'Booker password - must be strong password (min 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character)',
   })
   @MinLength(8)
   @MaxLength(100)

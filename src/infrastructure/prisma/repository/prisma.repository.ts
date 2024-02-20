@@ -23,7 +23,7 @@
 //   | symbol
 // >;
 
-// type PrismaCreateInputs = Prisma.UserCreateInput | Prisma.ContactCreateInput;
+// type PrismaCreateInputs = Prisma.BookerCreateInput | Prisma.ContactCreateInput;
 
 // export class PrismaRepository<
 //   DomainEntity extends Entity<any>,

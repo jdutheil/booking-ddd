@@ -11,7 +11,7 @@ async function bootstrap() {
     .setTitle('Booking API')
     .setDescription('API for booking app')
     .setVersion('1.0')
-    .addTag('user')
+    .addTag('booker')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

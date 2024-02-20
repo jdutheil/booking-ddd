@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from '@src/modules/user/user.module';
+import { BookerModule } from '@src/modules/booker/booker.module';
 
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import { UserModule } from '@src/modules/user/user.module';
       isGlobal: true,
     }),
 
-    UserModule,
+    BookerModule,
   ],
   controllers: [],
   providers: [],
