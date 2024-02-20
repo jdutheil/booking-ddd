@@ -10,14 +10,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Auth domain
+
+model Authentication {
+  id String @id @default(uuid())
+  createdAt DateTime
+  updatedAt DateTime
+  
+  email String @unique
+  password String
+  
+  accessToken String?
+  refreshToken String?
+
+  booker Booker @relation(fields: [bookerId], references: [id])
+  bookerId String @unique
+}
+
+// Booker domain
+
 model Booker {
   id String @id @default(uuid())
   createdAt DateTime 
   updatedAt DateTime 
   email String @unique
-  hashedPassword String
+
+  authentication Authentication?
+  
   contacts Contact[]
 }
+
+// Contact domain
 
 model Contact {
   id String @id @default(uuid())
