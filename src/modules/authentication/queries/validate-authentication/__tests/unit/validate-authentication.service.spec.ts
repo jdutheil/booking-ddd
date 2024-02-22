@@ -1,13 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AggregateID } from '@src/libs/ddd';
 import { AUTHENTICATION_REPOSITORY } from '@src/modules/authentication/application/ports/authentication.repository.port';
 import { PASSWORD_MANAGER } from '@src/modules/authentication/application/ports/password-manager.port';
+import { AuthenticationEntity } from '@src/modules/authentication/domain/authentication.entity';
+import {
+  AuthenticationError,
+  AuthenticationInvalidEmailError,
+  AuthenticationInvalidPasswordError,
+} from '@src/modules/authentication/domain/authentication.errors';
 import { Argon2PasswordManager } from '@src/modules/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/modules/authentication/infrastructure/database/authentication.in-memory.repository';
+import { randomUUID } from 'crypto';
+import { Result } from 'oxide.ts';
+import { ValidateAuthenticationQuery } from '../../validate-authentication.query';
 import { ValidateAuthenticationService } from '../../validate-authentication.service';
 
 describe('ValidateAuthenticationService Unit Tests', () => {
   let service: ValidateAuthenticationService;
   let repository: AuthenticationInMemoryRepository;
+  let passwordManager: Argon2PasswordManager;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,9 +43,68 @@ describe('ValidateAuthenticationService Unit Tests', () => {
     repository = module.get<AuthenticationInMemoryRepository>(
       AUTHENTICATION_REPOSITORY,
     );
+    passwordManager = module.get<Argon2PasswordManager>(PASSWORD_MANAGER);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  beforeEach(() => {
+    repository.authentications = [];
+  });
+
+  it('should return AuthenticationInvalidEmailError if email is not found', async () => {
+    const authenticationQuery = new ValidateAuthenticationQuery({
+      email: 'test@gmail.com',
+      password: 'password',
+    });
+
+    const result: Result<AggregateID, AuthenticationError> =
+      await service.execute(authenticationQuery);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(AuthenticationInvalidEmailError);
+  });
+
+  it('should return AuthenticationInvalidPasswordError if password is wrong', async () => {
+    await repository.save(
+      await AuthenticationEntity.create({
+        email: 'test@gmail.com',
+        password: await passwordManager.hashPassword('password'),
+        bookerId: randomUUID(),
+      }),
+    );
+
+    const authenticationQuery = new ValidateAuthenticationQuery({
+      email: 'test@gmail.com',
+      password: 'wrongPassword',
+    });
+
+    const result: Result<AggregateID, AuthenticationError> =
+      await service.execute(authenticationQuery);
+    expect(result.isErr()).toBe(true);
+    expect(result.unwrapErr()).toBeInstanceOf(
+      AuthenticationInvalidPasswordError,
+    );
+  });
+
+  it('should return Authentication ID', async () => {
+    await repository.save(
+      await AuthenticationEntity.create({
+        email: 'test@gmail.com',
+        password: await passwordManager.hashPassword('password'),
+        bookerId: randomUUID(),
+      }),
+    );
+
+    const authenticationQuery = new ValidateAuthenticationQuery({
+      email: 'test@gmail.com',
+      password: 'password',
+    });
+
+    const result: Result<AggregateID, AuthenticationError> =
+      await service.execute(authenticationQuery);
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap()).not.toBeNull();
   });
 });

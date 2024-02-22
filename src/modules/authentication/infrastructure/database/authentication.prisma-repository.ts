@@ -48,6 +48,13 @@ export class AuthenticationPrismaRepository
     return authentication ? Some(this.mapper.toDomain(authentication)) : None;
   }
 
+  async findOneByEmail(email: string): Promise<Option<AuthenticationEntity>> {
+    const authentication = await this.prisma.authentication.findUnique({
+      where: { email },
+    });
+    return authentication ? Some(this.mapper.toDomain(authentication)) : None;
+  }
+
   async findAll(): Promise<AuthenticationEntity[]> {
     const authentications = await this.prisma.authentication.findMany();
     return authentications.map((authentication) =>

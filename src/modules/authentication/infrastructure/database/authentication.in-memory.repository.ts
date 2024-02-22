@@ -40,6 +40,13 @@ export class AuthenticationInMemoryRepository
     return authentication ? Some(authentication) : None;
   }
 
+  async findOneByEmail(email: string): Promise<Option<AuthenticationEntity>> {
+    const authentication = this.authentications.find(
+      (authentication) => authentication.email === email,
+    );
+    return authentication ? Some(authentication) : None;
+  }
+
   async findAll(): Promise<AuthenticationEntity[]> {
     return this.authentications;
   }
