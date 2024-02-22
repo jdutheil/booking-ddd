@@ -7,9 +7,7 @@ import * as request from 'supertest';
 
 const USERS_ROOT = '/v1/bookers';
 const VALID_EMAIL = 'booker@gmail.com';
-const VALID_PASSWORD = '$tr0ngP@ssw0rd';
 const INVALID_EMAIL = 'invalid-email';
-const INVALID_PASSWORD = 'password';
 
 describe('CreateBooker E2E', () => {
   let app: INestApplication;
@@ -41,17 +39,6 @@ describe('CreateBooker E2E', () => {
         .post(USERS_ROOT)
         .send({
           email: INVALID_EMAIL,
-          password: VALID_PASSWORD,
-        })
-        .expect(HttpStatus.BAD_REQUEST);
-    });
-
-    it('should throw BAD_REQUEST when password is invalid', async () => {
-      await request(app.getHttpServer())
-        .post(USERS_ROOT)
-        .send({
-          email: VALID_EMAIL,
-          password: INVALID_PASSWORD,
         })
         .expect(HttpStatus.BAD_REQUEST);
     });
@@ -61,7 +48,6 @@ describe('CreateBooker E2E', () => {
         .post(USERS_ROOT)
         .send({
           email: VALID_EMAIL,
-          password: VALID_PASSWORD,
         })
         .expect(HttpStatus.CREATED);
 
@@ -74,7 +60,6 @@ describe('CreateBooker E2E', () => {
         .post(USERS_ROOT)
         .send({
           email: VALID_EMAIL,
-          password: VALID_PASSWORD,
         })
         .expect(HttpStatus.CREATED);
 
@@ -82,7 +67,6 @@ describe('CreateBooker E2E', () => {
         .post(USERS_ROOT)
         .send({
           email: VALID_EMAIL,
-          password: VALID_PASSWORD,
         })
         .expect(HttpStatus.CONFLICT);
     });

@@ -6,7 +6,6 @@ describe('BookerEntity', () => {
     it('should create a BookerEntity', async () => {
       const createBookerProps: CreateBookerProps = {
         email: 'email',
-        password: 'password',
       };
 
       const booker = await BookerEntity.create(createBookerProps);
@@ -15,9 +14,6 @@ describe('BookerEntity', () => {
       expect(booker.createdAt).toBeDefined();
       expect(booker.updatedAt).toBeDefined();
       expect(booker.email).toBe(createBookerProps.email);
-      await expect(
-        booker.comparePassword(createBookerProps.password),
-      ).resolves.toBe(true);
     });
   });
 });

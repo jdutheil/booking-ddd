@@ -43,7 +43,6 @@ describe('BookerPrismaRepository Integration Test', () => {
     it('should save a booker', async () => {
       const booker = await BookerEntity.create({
         email: 'booker@mail.com',
-        password: 'password',
       });
 
       const bookerCount = await prismaService.booker.count();
@@ -57,13 +56,11 @@ describe('BookerPrismaRepository Integration Test', () => {
       expect(newBooker).not.toBeNull();
       expect(newBooker?.id).toBe(booker.id);
       expect(newBooker?.email).toBe(booker.email);
-      expect(newBooker?.hashedPassword).toBe(booker.hashedPassword);
     });
 
     it('should throw BookerAlreadyExists if booker already exists', async () => {
       const booker = await BookerEntity.create({
         email: 'booker@mail.com',
-        password: 'password',
       });
 
       await bookerPrismaRepository.save(booker);
@@ -88,7 +85,6 @@ describe('BookerPrismaRepository Integration Test', () => {
 
       booker = await BookerEntity.create({
         email: 'booker@mail.com',
-        password: 'password',
       });
       await bookerPrismaRepository.save(booker);
     });
@@ -99,7 +95,6 @@ describe('BookerPrismaRepository Integration Test', () => {
         expect(foundBooker.isSome()).toBe(true);
         expect(foundBooker.unwrap().id).toBe(booker.id);
         expect(foundBooker.unwrap().email).toBe(booker.email);
-        expect(foundBooker.unwrap().hashedPassword).toBe(booker.hashedPassword);
       });
 
       it('should return None if booker not found', async () => {
@@ -117,7 +112,6 @@ describe('BookerPrismaRepository Integration Test', () => {
         expect(foundBooker.isSome()).toBe(true);
         expect(foundBooker.unwrap().id).toBe(booker.id);
         expect(foundBooker.unwrap().email).toBe(booker.email);
-        expect(foundBooker.unwrap().hashedPassword).toBe(booker.hashedPassword);
       });
 
       it('should return None if booker not found', async () => {
@@ -133,7 +127,6 @@ describe('BookerPrismaRepository Integration Test', () => {
         expect(bookers.length).toBe(1);
         expect(bookers[0].id).toBe(booker.id);
         expect(bookers[0].email).toBe(booker.email);
-        expect(bookers[0].hashedPassword).toBe(booker.hashedPassword);
       });
     });
 
@@ -151,7 +144,6 @@ describe('BookerPrismaRepository Integration Test', () => {
         expect(bookers.data.length).toBe(1);
         expect(bookers.data[0].id).toBe(booker.id);
         expect(bookers.data[0].email).toBe(booker.email);
-        expect(bookers.data[0].hashedPassword).toBe(booker.hashedPassword);
       });
     });
 
@@ -168,7 +160,6 @@ describe('BookerPrismaRepository Integration Test', () => {
 
       booker = await BookerEntity.create({
         email: 'booker@mail.com',
-        password: 'password',
       });
       await bookerPrismaRepository.save(booker);
     });
@@ -188,7 +179,6 @@ describe('BookerPrismaRepository Integration Test', () => {
         await bookerPrismaRepository.delete(
           await BookerEntity.create({
             email: 'other@mail.com',
-            password: 'password',
           }),
         );
       } catch (error: any) {

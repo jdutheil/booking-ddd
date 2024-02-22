@@ -22,7 +22,6 @@ export class CreateBookerService implements ICommandHandler {
   ): Promise<Result<AggregateID, BookerAlreadyExistsError>> {
     const booker = await BookerEntity.create({
       email: command.email,
-      password: command.password,
     });
 
     try {

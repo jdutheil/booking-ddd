@@ -12,7 +12,6 @@ export class BookerMapper implements Mapper<BookerEntity, BookerModel> {
       updatedAt: new Date(record.updatedAt),
       props: {
         email: record.email,
-        hashedPassword: record.hashedPassword,
       },
     });
   }
@@ -21,7 +20,6 @@ export class BookerMapper implements Mapper<BookerEntity, BookerModel> {
     const record: BookerModel = {
       id: entity.id,
       email: entity.email,
-      hashedPassword: entity.hashedPassword,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
