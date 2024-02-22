@@ -3,13 +3,13 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { Paginated, PaginatedQueryParams } from '@src/libs/ddd';
 import { None, Option, Some } from 'oxide.ts';
-import { AuthenticationEntity } from '../domain/authentication.entity';
+import { AuthenticationRepositoryPort } from '../../application/ports/authentication.repository.port';
+import { AuthenticationEntity } from '../../domain/authentication.entity';
 import {
   AuthenticationAlreadyExistsError,
   AuthenticationNotFoundError,
-} from '../domain/authentication.errors';
-import { AuthenticationMapper } from '../domain/authentication.mapper';
-import { AuthenticationRepositoryPort } from './authentication.repository.port';
+} from '../../domain/authentication.errors';
+import { AuthenticationMapper } from '../../domain/authentication.mapper';
 
 // TODO : DRY with a Generic Repository !
 

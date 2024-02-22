@@ -9,6 +9,7 @@ import { CreateBookerService } from '../../create-booker.service';
 
 describe('CreateBookerService Unit Tests', () => {
   let service: CreateBookerService;
+  let repository: BookerInMemoryRepository;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,13 +24,20 @@ describe('CreateBookerService Unit Tests', () => {
     }).compile();
 
     service = module.get<CreateBookerService>(CreateBookerService);
+    repository = module.get<BookerInMemoryRepository>(USER_REPOSITORY);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
+  beforeEach(() => {
+    repository.bookers = [];
+  });
+
   it('should create a new booker', async () => {
+    const bookersCount = repository.bookers.length;
+
     const bookerDatas = new CreateBookerCommand({
       email: 'test@mail.com',
     });
@@ -37,6 +45,7 @@ describe('CreateBookerService Unit Tests', () => {
     const booker = (await service.execute(bookerDatas)).unwrap();
 
     expect(booker).toBeDefined();
+    expect(repository.bookers.length).toBe(bookersCount + 1);
     // TODO : Test get booker by id
   });
 

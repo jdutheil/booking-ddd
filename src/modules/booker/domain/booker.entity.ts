@@ -14,15 +14,6 @@ export class BookerEntity extends Entity<BookerProps> {
     return booker;
   }
 
-  // TODO : move to Authentication
-  // private static async getHashedPassword(password: string): Promise<string> {
-  //   return argon2.hash(password);
-  // }
-
-  // public async comparePassword(password: string): Promise<boolean> {
-  //   return argon2.verify(this._props.hashedPassword, password);
-  // }
-
   validate(): void {}
 
   get email(): string {

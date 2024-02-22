@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd/mapper.interface';
 import { None, Some } from 'oxide.ts';
+
 import {
   AuthenticationModel,
   authenticationSchema,
-} from '../database/authentication.model';
+} from '../infrastructure/database/authentication.model';
 import { AuthenticationEntity } from './authentication.entity';
 
 @Injectable()
