@@ -11,6 +11,8 @@ import {
 import { BookerMapper } from '../domain/booker.mapper';
 import { BookerRepositoryPort } from './booker.repository.port';
 
+// TODO : DRY with a Generic Repository !
+
 @Injectable()
 export class BookerPrismaRepository implements BookerRepositoryPort {
   constructor(

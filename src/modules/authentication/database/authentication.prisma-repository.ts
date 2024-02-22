@@ -11,6 +11,8 @@ import {
 import { AuthenticationMapper } from '../domain/authentication.mapper';
 import { AuthenticationRepositoryPort } from './authentication.repository.port';
 
+// TODO : DRY with a Generic Repository !
+
 @Injectable()
 export class AuthenticationPrismaRepository
   implements AuthenticationRepositoryPort
