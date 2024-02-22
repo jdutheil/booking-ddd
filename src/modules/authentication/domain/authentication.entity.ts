@@ -1,5 +1,6 @@
 import { AggregateID, Entity } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
+import { None, Option } from 'oxide.ts';
 import {
   AuthenticationProps,
   CreateAuthenticationProps,
@@ -16,6 +17,8 @@ export class AuthenticationEntity extends Entity<AuthenticationProps> {
       bookerId: create.bookerId,
       email: create.email,
       password: create.password,
+      accessToken: None,
+      refreshToken: None,
     };
     const authentication = new AuthenticationEntity({ id, props });
     return authentication;
@@ -33,5 +36,13 @@ export class AuthenticationEntity extends Entity<AuthenticationProps> {
 
   get password(): string {
     return this._props.password;
+  }
+
+  get accessToken(): Option<string> {
+    return this._props.accessToken;
+  }
+
+  get refreshToken(): Option<string> {
+    return this._props.refreshToken;
   }
 }

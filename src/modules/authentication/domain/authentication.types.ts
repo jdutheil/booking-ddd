@@ -1,11 +1,12 @@
 import { AggregateID } from '@src/libs/ddd';
+import { Option } from 'oxide.ts';
 
 export interface AuthenticationProps {
   bookerId: AggregateID;
   email: string;
   password: string;
-  accessToken?: string;
-  refreshToken?: string;
+  accessToken: Option<string>;
+  refreshToken: Option<string>;
 }
 
 export interface CreateAuthenticationProps {
