@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BookerModule } from '@src/modules/booker/booker.module';
+import { AuthenticationModule } from './modules/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { BookerModule } from '@src/modules/booker/booker.module';
       isGlobal: true,
     }),
 
+    AuthenticationModule,
     BookerModule,
   ],
   controllers: [],
