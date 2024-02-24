@@ -45,4 +45,8 @@ export class AuthenticationEntity extends Entity<AuthenticationProps> {
   get refreshToken(): Option<string> {
     return this._props.refreshToken;
   }
+
+  set refreshToken(refreshToken: Option<string>) {
+    this._props.refreshToken = refreshToken;
+  }
 }

@@ -16,8 +16,8 @@ import { CreateBookerCommand } from './create-booker.command';
 export class CreateBookerService implements ICommandHandler {
   constructor(
     @Inject(USER_REPOSITORY)
-    private readonly bookerRepository: BookerRepositoryPort,
-    private readonly eventEmitter: EventEmitter2,
+    private bookerRepository: BookerRepositoryPort,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute(

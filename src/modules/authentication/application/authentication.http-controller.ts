@@ -7,8 +7,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
+import { RefreshTokenUpdatedEvent } from '../domain/events/refresh-token-updated.event';
 import { JwtAuthenticationGuard } from '../infrastructure/security/jwt-authentication.guard';
 import { LocalAuthenticationGuard } from '../infrastructure/security/local-authentication.guard';
 import { TokensResponse } from '../interface/dtos/tokens.response.dto';
@@ -18,7 +20,10 @@ import { Tokens } from './ports/jwt-service.port';
 @Controller(routesV1.version)
 @ApiTags('Authentication')
 export class AuthenticationHttpController {
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(
+    private queryBus: QueryBus,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   @ApiOperation({ summary: 'Sign in', tags: ['Authentication'] })
   @ApiResponse({
@@ -35,9 +40,16 @@ export class AuthenticationHttpController {
     // Request has been handled by LocalAuthenticationGuard
     // We're sure the user has been validated
     // We just need to send the JWT
-    const tokens: Tokens = await this.queryBus.execute(
-      new JwtQuery(req.user.id),
+    const tokens: Tokens = await this.queryBus.execute(new JwtQuery(req.user));
+
+    this.eventEmitter.emit(
+      RefreshTokenUpdatedEvent.eventName,
+      new RefreshTokenUpdatedEvent({
+        authenticationId: req.user,
+        refreshToken: tokens.refreshToken,
+      }),
     );
+
     return new TokensResponse(tokens);
   }
 

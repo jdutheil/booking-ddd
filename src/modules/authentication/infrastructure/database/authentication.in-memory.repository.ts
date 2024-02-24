@@ -33,6 +33,16 @@ export class AuthenticationInMemoryRepository
     this.authentications.push(...entities);
   }
 
+  async update(entity: AuthenticationEntity): Promise<void> {
+    const index = this.authentications.findIndex(
+      (authentication) => authentication.id === entity.id,
+    );
+    if (index === -1) {
+      throw new AuthenticationNotFoundError();
+    }
+    this.authentications[index] = entity;
+  }
+
   async findOneById(id: string): Promise<Option<AuthenticationEntity>> {
     const authentication = this.authentications.find(
       (authentication) => authentication.id === id,

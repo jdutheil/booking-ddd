@@ -6,6 +6,7 @@ import { None, Option, Some } from 'oxide.ts';
 import { BookerEntity } from '../domain/booker.entity';
 import {
   BookerAlreadyExistsError,
+  BookerError,
   BookerNotFoundError,
 } from '../domain/booker.errors';
 import { BookerMapper } from '../domain/booker.mapper';
@@ -31,6 +32,22 @@ export class BookerPrismaRepository implements BookerRepositoryPort {
         error.code === 'P2002'
       ) {
         throw new BookerAlreadyExistsError(error);
+      }
+
+      throw error;
+    }
+  }
+
+  async update(entity: BookerEntity): Promise<void> {
+    const record = this.mapper.toPersistence(entity);
+    try {
+      await this.prisma.booker.update({
+        where: { id: entity.id },
+        data: record,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new BookerError('Booker Prisma error', error);
       }
 
       throw error;

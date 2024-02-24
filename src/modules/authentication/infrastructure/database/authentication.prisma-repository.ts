@@ -7,6 +7,7 @@ import { AuthenticationRepositoryPort } from '../../application/ports/authentica
 import { AuthenticationEntity } from '../../domain/authentication.entity';
 import {
   AuthenticationAlreadyExistsError,
+  AuthenticationError,
   AuthenticationNotFoundError,
 } from '../../domain/authentication.errors';
 import { AuthenticationMapper } from '../../domain/authentication.mapper';
@@ -29,12 +30,28 @@ export class AuthenticationPrismaRepository
     const records = entities.map((entity) => this.mapper.toPersistence(entity));
     try {
       await this.prisma.authentication.createMany({ data: records });
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
         throw new AuthenticationAlreadyExistsError(error);
+      }
+
+      throw error;
+    }
+  }
+
+  async update(entity: AuthenticationEntity): Promise<void> {
+    const record = this.mapper.toPersistence(entity);
+    try {
+      await this.prisma.authentication.update({
+        where: { id: entity.id },
+        data: record,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new AuthenticationError('Authentication Prisma error', error);
       }
 
       throw error;

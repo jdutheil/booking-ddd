@@ -27,6 +27,14 @@ export class BookerInMemoryRepository implements BookerRepositoryPort {
     this.bookers.push(...entities);
   }
 
+  async update(entity: BookerEntity): Promise<void> {
+    const index = this.bookers.findIndex((booker) => booker.id === entity.id);
+    if (index === -1) {
+      throw new BookerNotFoundError();
+    }
+    this.bookers[index] = entity;
+  }
+
   async findOneById(id: string): Promise<Option<BookerEntity>> {
     const booker = this.bookers.find((booker) => booker.id === id);
     return booker ? Some(booker) : None;
