@@ -9,6 +9,7 @@ import { AUTHENTICATION_REPOSITORY } from './application/ports/authentication.re
 import { PASSWORD_MANAGER } from './application/ports/password-manager.port';
 import { CreateAuthenticationService } from './commands/create-authentication/create-authentication.service';
 import { AuthenticationMapper } from './domain/authentication.mapper';
+import { CreateAuthenticationWhenBookerCreatedEventHandler } from './events-handlers/create-authentication-when-booker-created.event-handler';
 import { Argon2PasswordManager } from './infrastructure/argon2-password-manager';
 import { AuthenticationPrismaRepository } from './infrastructure/database/authentication.prisma-repository';
 import { LocalStrategy } from './infrastructure/security/local.strategy';
@@ -50,6 +51,9 @@ const queryHandlers: Provider[] = [
   ValidateAuthenticationService,
   JwtQueryHandler,
 ];
+const eventHandlers: Provider[] = [
+  CreateAuthenticationWhenBookerCreatedEventHandler,
+];
 
 const mappers: Provider[] = [AuthenticationMapper];
 
@@ -64,6 +68,7 @@ const httpControllers = [AuthenticationHttpController];
     ...orms,
     ...commandHandlers,
     ...queryHandlers,
+    ...eventHandlers,
     ...mappers,
     ...securityStrategies,
   ],
