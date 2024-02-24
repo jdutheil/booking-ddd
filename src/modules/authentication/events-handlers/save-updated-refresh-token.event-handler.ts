@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { OnEvent } from '@nestjs/event-emitter';
-import { Some } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepositoryPort,
@@ -37,7 +36,7 @@ export class SaveUpdatedRefreshTokenEventHandler {
     const authenticationEntity = authentication.unwrap();
     const hashedRefreshToken =
       await this.passwordManager.hashPassword(refreshToken);
-    authenticationEntity.refreshToken = Some(hashedRefreshToken);
+    authenticationEntity.refreshToken = hashedRefreshToken;
 
     await this.authenticationRepository.update(authenticationEntity);
   }

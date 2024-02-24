@@ -1,6 +1,6 @@
 import { AggregateID, Entity } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
-import { None, Option } from 'oxide.ts';
+import { None, Option, Some } from 'oxide.ts';
 import {
   AuthenticationProps,
   CreateAuthenticationProps,
@@ -46,7 +46,11 @@ export class AuthenticationEntity extends Entity<AuthenticationProps> {
     return this._props.refreshToken;
   }
 
-  set refreshToken(refreshToken: Option<string>) {
-    this._props.refreshToken = refreshToken;
+  set refreshToken(refreshToken: string) {
+    this._props.refreshToken = Some(refreshToken);
+  }
+
+  clearRefreshToken(): void {
+    this._props.refreshToken = None;
   }
 }
