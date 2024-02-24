@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BookerModule } from '@src/modules/booker/booker.module';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 
@@ -10,6 +11,8 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
+    EventEmitterModule.forRoot(),
 
     AuthenticationModule,
     BookerModule,

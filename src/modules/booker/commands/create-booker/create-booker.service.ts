@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AggregateID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
 import {
@@ -8,6 +9,7 @@ import {
 } from '../../database/booker.repository.port';
 import { BookerEntity } from '../../domain/booker.entity';
 import { BookerAlreadyExistsError } from '../../domain/booker.errors';
+import { BookerCreatedEvent } from '../../domain/events/booker-created.event';
 import { CreateBookerCommand } from './create-booker.command';
 
 @CommandHandler(CreateBookerCommand)
@@ -15,6 +17,7 @@ export class CreateBookerService implements ICommandHandler {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly bookerRepository: BookerRepositoryPort,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async execute(
@@ -33,6 +36,11 @@ export class CreateBookerService implements ICommandHandler {
 
       throw error;
     }
+
+    this.eventEmitter.emit(
+      BookerCreatedEvent.eventName,
+      new BookerCreatedEvent(booker.id),
+    );
 
     return Ok(booker.id);
   }

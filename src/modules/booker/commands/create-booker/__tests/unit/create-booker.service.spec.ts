@@ -1,8 +1,10 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AggregateID } from '@src/libs/ddd';
 import { BookerInMemoryRepository } from '@src/modules/booker/database/booker.in-memory-repository';
 import { USER_REPOSITORY } from '@src/modules/booker/database/booker.repository.port';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
+import { BookerCreatedEvent } from '@src/modules/booker/domain/events/booker-created.event';
 import { Result } from 'oxide.ts';
 import { CreateBookerCommand } from '../../create-booker.command';
 import { CreateBookerService } from '../../create-booker.service';
@@ -10,6 +12,7 @@ import { CreateBookerService } from '../../create-booker.service';
 describe('CreateBookerService Unit Tests', () => {
   let service: CreateBookerService;
   let repository: BookerInMemoryRepository;
+  let eventEmitter: EventEmitter2;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,11 +23,19 @@ describe('CreateBookerService Unit Tests', () => {
         },
 
         CreateBookerService,
+
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<CreateBookerService>(CreateBookerService);
     repository = module.get<BookerInMemoryRepository>(USER_REPOSITORY);
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
   });
 
   it('should be defined', () => {
@@ -42,11 +53,15 @@ describe('CreateBookerService Unit Tests', () => {
       email: 'test@mail.com',
     });
 
-    const booker = (await service.execute(bookerDatas)).unwrap();
+    const bookerId = (await service.execute(bookerDatas)).unwrap();
 
-    expect(booker).toBeDefined();
+    expect(bookerId).toBeDefined();
     expect(repository.bookers.length).toBe(bookersCount + 1);
-    // TODO : Test get booker by id
+
+    expect(eventEmitter.emit).toHaveBeenCalledWith(
+      BookerCreatedEvent.eventName,
+      { id: bookerId },
+    );
   });
 
   it('should return an error if the email is already used', async () => {
