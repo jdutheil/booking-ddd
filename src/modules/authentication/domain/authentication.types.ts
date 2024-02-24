@@ -14,5 +14,3 @@ export interface CreateAuthenticationProps {
   email: string;
   password: string;
 }
-
-export type Jwt = string;

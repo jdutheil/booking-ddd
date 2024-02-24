@@ -1,13 +1,20 @@
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { JwtService } from '@nestjs/jwt';
-import { Jwt } from '../../domain/authentication.types';
+import {
+  JWT_SERVICE,
+  JwtServicePort,
+  Tokens,
+} from '../../application/ports/jwt-service.port';
 import { JwtQuery } from './jwt-query';
 
 @QueryHandler(JwtQuery)
 export class JwtQueryHandler implements IQueryHandler {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    @Inject(JWT_SERVICE)
+    private readonly jwtService: JwtServicePort,
+  ) {}
 
-  async execute(query: JwtQuery): Promise<Jwt> {
-    return this.jwtService.signAsync({ id: query.id });
+  async execute(query: JwtQuery): Promise<Tokens> {
+    return this.jwtService.getTokens(query.id);
   }
 }

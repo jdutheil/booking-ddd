@@ -21,7 +21,7 @@ export class CreateBookerHttpController {
 
   @ApiOperation({ summary: 'Create a booker', tags: ['booker'] })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: IdResponse,
   })
   @ApiResponse({

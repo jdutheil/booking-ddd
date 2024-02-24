@@ -1,25 +1,44 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { routesV1 } from '@src/configs/routes';
 import { JwtAuthenticationGuard } from '../infrastructure/security/jwt-authentication.guard';
 import { LocalAuthenticationGuard } from '../infrastructure/security/local-authentication.guard';
-import { TokenResponse } from '../interface/dtos/token.response.dto';
+import { TokensResponse } from '../interface/dtos/tokens.response.dto';
 import { JwtQuery } from '../queries/jwt-query/jwt-query';
+import { Tokens } from './ports/jwt-service.port';
 
-@Controller()
+@Controller(routesV1.version)
 @ApiTags('Authentication')
 export class AuthenticationHttpController {
   constructor(private readonly queryBus: QueryBus) {}
 
+  @ApiOperation({ summary: 'Sign in', tags: ['Authentication'] })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: TokensResponse,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Wrong credentials',
+  })
   @UseGuards(LocalAuthenticationGuard)
-  @Post('login')
-  async login(@Request() req: any): Promise<TokenResponse> {
+  @Post(routesV1.auth.signin)
+  async signin(@Request() req: any): Promise<TokensResponse> {
     // Request has been handled by LocalAuthenticationGuard
     // We're sure the user has been validated
     // We just need to send the JWT
-    return {
-      accessToken: await this.queryBus.execute(new JwtQuery(req.user)),
-    };
+    const tokens: Tokens = await this.queryBus.execute(
+      new JwtQuery(req.user.id),
+    );
+    return new TokensResponse(tokens);
   }
 
   @UseGuards(JwtAuthenticationGuard)
