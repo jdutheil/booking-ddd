@@ -1,3 +1,6 @@
 - Add tests for all features, specially for Authentication
 - Understand how to test for events
 - Choose a communication method between modules
+- Write a PrismaBaseRepository
+- Review folders structure to be uniform between modules
+- Write DOC as the code goes ! 
