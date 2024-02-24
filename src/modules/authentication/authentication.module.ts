@@ -12,6 +12,7 @@ import { AuthenticationMapper } from './domain/authentication.mapper';
 import { CreateAuthenticationWhenBookerCreatedEventHandler } from './events-handlers/create-authentication-when-booker-created.event-handler';
 import { Argon2PasswordManager } from './infrastructure/argon2-password-manager';
 import { AuthenticationPrismaRepository } from './infrastructure/database/authentication.prisma-repository';
+import { JwtStrategy } from './infrastructure/security/jwt.strategy';
 import { LocalStrategy } from './infrastructure/security/local.strategy';
 import { JwtQueryHandler } from './queries/jwt-query/jwt-query.handler';
 import { ValidateAuthenticationService } from './queries/validate-authentication/validate-authentication.service';
@@ -57,7 +58,7 @@ const eventHandlers: Provider[] = [
 
 const mappers: Provider[] = [AuthenticationMapper];
 
-const securityStrategies: Provider[] = [LocalStrategy];
+const securityStrategies: Provider[] = [LocalStrategy, JwtStrategy];
 
 const httpControllers = [AuthenticationHttpController];
 

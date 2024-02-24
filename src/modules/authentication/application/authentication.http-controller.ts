@@ -1,6 +1,7 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthenticationGuard } from '../infrastructure/security/jwt-authentication.guard';
 import { LocalAuthenticationGuard } from '../infrastructure/security/local-authentication.guard';
 import { TokenResponse } from '../interface/dtos/token.response.dto';
 import { JwtQuery } from '../queries/jwt-query/jwt-query';
@@ -19,5 +20,11 @@ export class AuthenticationHttpController {
     return {
       accessToken: await this.queryBus.execute(new JwtQuery(req.user)),
     };
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('test-auth')
+  async test(): Promise<string> {
+    return 'You are authenticated';
   }
 }
