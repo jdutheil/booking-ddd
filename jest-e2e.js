@@ -1,6 +1,8 @@
 module.exports = {
   preset: 'ts-jest',
 
+  globalSetup: '<rootDir>/dotenv-setup.ts',
+
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/src/$1',
     '^@modules/(.*)$': '<rootDir>/src/modules/$1',

@@ -51,6 +51,7 @@ describe('CreateBookerService Unit Tests', () => {
 
     const bookerDatas = new CreateBookerCommand({
       email: 'test@mail.com',
+      password: 'password',
     });
 
     const bookerId = (await service.execute(bookerDatas)).unwrap();
@@ -60,13 +61,18 @@ describe('CreateBookerService Unit Tests', () => {
 
     expect(eventEmitter.emit).toHaveBeenCalledWith(
       BookerCreatedEvent.eventName,
-      { id: bookerId },
+      {
+        id: bookerId,
+        email: bookerDatas.email,
+        password: bookerDatas.password,
+      },
     );
   });
 
   it('should return an error if the email is already used', async () => {
     const bookerDatas = new CreateBookerCommand({
       email: 'test@gmail.com',
+      password: 'password',
     });
 
     await service.execute(bookerDatas);

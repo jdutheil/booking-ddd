@@ -28,6 +28,8 @@ describe('CreateAuthenticationWhenBookerCreatedEventHandler Unit Tests', () => {
   it('should call command bus with CreateAuthenticationCommand', async () => {
     const event = {
       id: 'booker-id',
+      email: 'booker-email@mail.com',
+      password: 'booker-password',
     };
 
     await handler.handle(event);

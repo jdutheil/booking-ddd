@@ -4,8 +4,12 @@ export class BookerCreatedEvent {
   static readonly eventName = 'booker.created' as const;
 
   readonly id: AggregateID;
+  readonly email: string;
+  readonly password: string;
 
-  constructor(id: AggregateID) {
-    this.id = id;
+  constructor(props: BookerCreatedEvent) {
+    this.id = props.id;
+    this.email = props.email;
+    this.password = props.password;
   }
 }

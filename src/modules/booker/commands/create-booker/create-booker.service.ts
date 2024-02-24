@@ -39,7 +39,11 @@ export class CreateBookerService implements ICommandHandler {
 
     this.eventEmitter.emit(
       BookerCreatedEvent.eventName,
-      new BookerCreatedEvent(booker.id),
+      new BookerCreatedEvent({
+        id: booker.id,
+        email: booker.email,
+        password: command.password,
+      }),
     );
 
     return Ok(booker.id);

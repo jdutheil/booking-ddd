@@ -12,8 +12,8 @@ export class CreateAuthenticationWhenBookerCreatedEventHandler {
   async handle(event: BookerCreatedEvent) {
     const command = new CreateAuthenticationCommand({
       bookerId: event.id,
-      email: 'todo@gmail.com',
-      password: 'password',
+      email: event.email,
+      password: event.password,
     });
 
     await this.commandBus.execute(command);
