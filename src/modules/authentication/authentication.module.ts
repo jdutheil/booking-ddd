@@ -19,6 +19,7 @@ import { LocalStrategy } from './infrastructure/security/local.strategy';
 import { NestJwtService } from './infrastructure/security/nest-jwt-service';
 import { JwtQueryHandler } from './queries/jwt-query/jwt-query.handler';
 import { ValidateAuthenticationService } from './queries/validate-authentication/validate-authentication.service';
+import { ValidateRefreshTokenQueryHandler } from './queries/validate-refresh-token/validate-refresh-token.query.handler';
 
 const imports = [CqrsModule, JwtModule.register({}), PassportModule];
 
@@ -47,6 +48,7 @@ const commandHandlers: Provider[] = [CreateAuthenticationService];
 const queryHandlers: Provider[] = [
   ValidateAuthenticationService,
   JwtQueryHandler,
+  ValidateRefreshTokenQueryHandler,
 ];
 const eventHandlers: Provider[] = [
   CreateAuthenticationWhenBookerCreatedEventHandler,

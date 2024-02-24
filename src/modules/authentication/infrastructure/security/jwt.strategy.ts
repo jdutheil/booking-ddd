@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(id: AggregateID): Promise<AggregateID> {
-    return id;
+  async validate(id: AggregateID) {
+    return { id };
   }
 }

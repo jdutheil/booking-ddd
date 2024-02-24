@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  async validate(email: string, password: string): Promise<AggregateID> {
+  async validate(email: string, password: string) {
     const authentication: Result<AggregateID, AuthenticationError> =
       await this.queryBus.execute(
         new ValidateAuthenticationQuery({ email, password }),
@@ -23,6 +23,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
-    return authentication.unwrap();
+    return {
+      id: authentication.unwrap(),
+    };
   }
 }
