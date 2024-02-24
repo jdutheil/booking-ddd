@@ -12,6 +12,8 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   let repository: AuthenticationInMemoryRepository;
   let passwordManager: Argon2PasswordManager;
 
+  let authenticationEntity: AuthenticationEntity;
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -38,8 +40,15 @@ describe('ValidateRefreshTokenQueryHandler', () => {
     passwordManager = module.get<Argon2PasswordManager>(PASSWORD_MANAGER);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     repository.authentications = [];
+
+    authenticationEntity = await AuthenticationEntity.create({
+      email: 'test@mail.com',
+      password: 'password',
+      bookerId: randomUUID(),
+    });
+    await repository.save(authenticationEntity);
   });
 
   it('should return false if authentication does not exist', async () => {
@@ -52,17 +61,12 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   });
 
   it("should return false if refreshToken doesn't match witht he one in the database", async () => {
-    const authenticationEntity = await AuthenticationEntity.create({
-      email: 'test@mail.com',
-      password: 'password',
-      bookerId: randomUUID(),
-    });
     const plainRefreshToken = 'random-token';
     const hashedRefreshToken =
       await passwordManager.hashPassword(plainRefreshToken);
     authenticationEntity.refreshToken = hashedRefreshToken;
 
-    await repository.save(authenticationEntity);
+    await repository.update(authenticationEntity);
 
     const result = await handler.execute({
       authenticationId: authenticationEntity.id,
@@ -73,13 +77,6 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   });
 
   it('should return false if refreshToken is not set on Authentication', async () => {
-    const authenticationEntity = await AuthenticationEntity.create({
-      email: 'test@mail.com',
-      password: 'password',
-      bookerId: randomUUID(),
-    });
-    await repository.save(authenticationEntity);
-
     const result = await handler.execute({
       authenticationId: authenticationEntity.id,
       refreshToken: 'random-token',
@@ -89,17 +86,12 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   });
 
   it('should return true if refreshToken matches with the one in the database', async () => {
-    const authenticationEntity = await AuthenticationEntity.create({
-      email: 'test@mail.com',
-      password: 'password',
-      bookerId: randomUUID(),
-    });
     const plainRefreshToken = 'random-token';
     const hashedRefreshToken =
       await passwordManager.hashPassword(plainRefreshToken);
     authenticationEntity.refreshToken = hashedRefreshToken;
 
-    await repository.save(authenticationEntity);
+    await repository.update(authenticationEntity);
 
     const result = await handler.execute({
       authenticationId: authenticationEntity.id,
