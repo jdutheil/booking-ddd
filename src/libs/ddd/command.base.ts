@@ -5,7 +5,6 @@ export type CommandProps<T> = Omit<T, 'id' | 'metadata'> & Partial<Command>;
 type CommandMetadata = {
   readonly correlationId: string;
   readonly causationId?: string;
-  readonly bookerId?: string;
   readonly timestamp: number;
 };
 
@@ -18,7 +17,6 @@ export class Command {
     this.metadata = {
       correlationId: props.metadata?.correlationId || randomUUID(),
       causationId: props.metadata?.causationId,
-      bookerId: props.metadata?.bookerId,
       timestamp: props.metadata?.timestamp || Date.now(),
     };
   }
