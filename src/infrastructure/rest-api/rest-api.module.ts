@@ -4,7 +4,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { JwtAuthenticationGuard } from './authentication/infrastructure/security/jwt-authentication.guard';
-import { RegisterBookerHttpController } from './booker/register-booker/register-booker.http.controller';
+import { RegisterBookerHttpController } from './booker/application/register-booker/register-booker.http.controller';
 
 @Module({
   imports: [CqrsModule, EventEmitterModule.forRoot(), AuthenticationModule],
