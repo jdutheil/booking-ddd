@@ -5,13 +5,13 @@ import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepositoryPort,
-} from '../../application/ports/authentication.repository.port';
+} from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
-} from '../../application/ports/password-manager.port';
-import { AuthenticationEntity } from '../../domain/authentication.entity';
-import { AuthenticationAlreadyExistsError } from '../../domain/authentication.errors';
+} from '../../../application/ports/password-manager.port';
+import { AuthenticationEntity } from '../../../domain/authentication.entity';
+import { AuthenticationAlreadyExistsError } from '../../../domain/authentication.errors';
 import { CreateAuthenticationCommand } from './create-authentication.command';
 
 @CommandHandler(CreateAuthenticationCommand)

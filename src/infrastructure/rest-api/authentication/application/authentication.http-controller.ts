@@ -17,9 +17,9 @@ import { Public } from '../infrastructure/security/is-public';
 import { JwtRefreshAuthenticationGuard } from '../infrastructure/security/jwt-refresh-authentication.guard';
 import { LocalAuthenticationGuard } from '../infrastructure/security/local-authentication.guard';
 import { TokensResponse } from '../interface/dtos/tokens.response.dto';
-import { JwtQuery } from '../queries/jwt-query/jwt-query';
-import { ValidateRefreshTokenQuery } from '../queries/validate-refresh-token/valiate-refresh-token.query';
 import { Tokens } from './ports/jwt-service.port';
+import { JwtQuery } from './queries/jwt-query/jwt-query';
+import { ValidateRefreshTokenQuery } from './queries/validate-refresh-token/valiate-refresh-token.query';
 
 @Controller(`${routesV1.version}/${routesV1.auth.root}`)
 @ApiTags('Authentication')

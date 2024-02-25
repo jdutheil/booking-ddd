@@ -4,7 +4,7 @@ import {
   JWT_SERVICE,
   JwtServicePort,
   Tokens,
-} from '../../application/ports/jwt-service.port';
+} from '../../../application/ports/jwt-service.port';
 import { JwtQuery } from './jwt-query';
 
 @QueryHandler(JwtQuery)

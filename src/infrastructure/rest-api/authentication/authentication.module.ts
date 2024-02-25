@@ -4,22 +4,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { AuthenticationHttpController } from './application/authentication.http-controller';
+import { CreateAuthenticationService } from './application/commands/create-authentication/create-authentication.service';
+import { CreateAuthenticationWhenBookerRegisteredEventHandler } from './application/events-handlers/create-authentication-when-booker-registered.event-handler';
+import { SaveUpdatedRefreshTokenEventHandler } from './application/events-handlers/save-updated-refresh-token.event-handler';
 import { AUTHENTICATION_REPOSITORY } from './application/ports/authentication.repository.port';
 import { JWT_SERVICE } from './application/ports/jwt-service.port';
 import { PASSWORD_MANAGER } from './application/ports/password-manager.port';
-import { CreateAuthenticationService } from './commands/create-authentication/create-authentication.service';
+import { JwtQueryHandler } from './application/queries/jwt-query/jwt-query.handler';
+import { ValidateAuthenticationService } from './application/queries/validate-authentication/validate-authentication.service';
+import { ValidateRefreshTokenQueryHandler } from './application/queries/validate-refresh-token/validate-refresh-token.query.handler';
 import { AuthenticationMapper } from './domain/authentication.mapper';
-import { CreateAuthenticationWhenBookerRegisteredEventHandler } from './events-handlers/create-authentication-when-booker-registered.event-handler';
-import { SaveUpdatedRefreshTokenEventHandler } from './events-handlers/save-updated-refresh-token.event-handler';
 import { Argon2PasswordManager } from './infrastructure/argon2-password-manager';
 import { AuthenticationPrismaRepository } from './infrastructure/database/authentication.prisma-repository';
 import { JwtRefreshStrategy } from './infrastructure/security/jwt-refresh.strategy';
 import { JwtStrategy } from './infrastructure/security/jwt.strategy';
 import { LocalStrategy } from './infrastructure/security/local.strategy';
 import { NestJwtService } from './infrastructure/security/nest-jwt-service';
-import { JwtQueryHandler } from './queries/jwt-query/jwt-query.handler';
-import { ValidateAuthenticationService } from './queries/validate-authentication/validate-authentication.service';
-import { ValidateRefreshTokenQueryHandler } from './queries/validate-refresh-token/validate-refresh-token.query.handler';
 
 const imports = [CqrsModule, JwtModule.register({}), PassportModule];
 

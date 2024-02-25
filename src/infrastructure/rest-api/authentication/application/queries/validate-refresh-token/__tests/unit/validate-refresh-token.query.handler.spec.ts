@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AUTHENTICATION_REPOSITORY } from '@src/modules/authentication/application/ports/authentication.repository.port';
-import { PASSWORD_MANAGER } from '@src/modules/authentication/application/ports/password-manager.port';
-import { AuthenticationEntity } from '@src/modules/authentication/domain/authentication.entity';
-import { Argon2PasswordManager } from '@src/modules/authentication/infrastructure/argon2-password-manager';
-import { AuthenticationInMemoryRepository } from '@src/modules/authentication/infrastructure/database/authentication.in-memory.repository';
+import { AUTHENTICATION_REPOSITORY } from '@src/infrastructure/rest-api/authentication/application/ports/authentication.repository.port';
+import { PASSWORD_MANAGER } from '@src/infrastructure/rest-api/authentication/application/ports/password-manager.port';
+import { AuthenticationEntity } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
+import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
+import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
 import { randomUUID } from 'crypto';
 import { ValidateRefreshTokenQueryHandler } from '../../validate-refresh-token.query.handler';
 

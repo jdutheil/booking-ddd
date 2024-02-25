@@ -4,8 +4,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { AggregateID } from '@src/libs/ddd';
 import { Result } from 'oxide.ts';
 import { Strategy } from 'passport-local';
+import { ValidateAuthenticationQuery } from '../../application/queries/validate-authentication/validate-authentication.query';
 import { AuthenticationError } from '../../domain/authentication.errors';
-import { ValidateAuthenticationQuery } from '../../queries/validate-authentication/validate-authentication.query';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

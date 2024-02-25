@@ -1,15 +1,15 @@
 import { CommandBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateAuthenticationWhenBookerCreatedEventHandler } from '../../create-authentication-when-booker-registered.event-handler';
+import { CreateAuthenticationWhenBookerRegisteredEventHandler } from '../../create-authentication-when-booker-registered.event-handler';
 
 describe('CreateAuthenticationWhenBookerCreatedEventHandler Unit Tests', () => {
-  let handler: CreateAuthenticationWhenBookerCreatedEventHandler;
+  let handler: CreateAuthenticationWhenBookerRegisteredEventHandler;
   let commandBus: CommandBus;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CreateAuthenticationWhenBookerCreatedEventHandler,
+        CreateAuthenticationWhenBookerRegisteredEventHandler,
         {
           provide: CommandBus,
           useValue: {
@@ -19,8 +19,8 @@ describe('CreateAuthenticationWhenBookerCreatedEventHandler Unit Tests', () => {
       ],
     }).compile();
 
-    handler = module.get<CreateAuthenticationWhenBookerCreatedEventHandler>(
-      CreateAuthenticationWhenBookerCreatedEventHandler,
+    handler = module.get<CreateAuthenticationWhenBookerRegisteredEventHandler>(
+      CreateAuthenticationWhenBookerRegisteredEventHandler,
     );
     commandBus = module.get<CommandBus>(CommandBus);
   });

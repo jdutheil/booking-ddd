@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuthenticationAlreadyExistsError } from '@src/infrastructure/rest-api/authentication/domain/authentication.errors';
+import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
+import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
 import { AggregateID } from '@src/libs/ddd';
-import { AUTHENTICATION_REPOSITORY } from '@src/modules/authentication/application/ports/authentication.repository.port';
-import { PASSWORD_MANAGER } from '@src/modules/authentication/application/ports/password-manager.port';
-import { AuthenticationAlreadyExistsError } from '@src/modules/authentication/domain/authentication.errors';
-import { Argon2PasswordManager } from '@src/modules/authentication/infrastructure/argon2-password-manager';
-import { AuthenticationInMemoryRepository } from '@src/modules/authentication/infrastructure/database/authentication.in-memory.repository';
 import { randomUUID } from 'crypto';
 import { Result } from 'oxide.ts';
+import { AUTHENTICATION_REPOSITORY } from '../../../../ports/authentication.repository.port';
+import { PASSWORD_MANAGER } from '../../../../ports/password-manager.port';
 import { CreateAuthenticationCommand } from '../../create-authentication.command';
 import { CreateAuthenticationService } from '../../create-authentication.service';
 

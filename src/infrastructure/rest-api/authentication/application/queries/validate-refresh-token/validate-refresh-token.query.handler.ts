@@ -4,12 +4,12 @@ import { Option } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepositoryPort,
-} from '../../application/ports/authentication.repository.port';
+} from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
-} from '../../application/ports/password-manager.port';
-import { AuthenticationEntity } from '../../domain/authentication.entity';
+} from '../../../application/ports/password-manager.port';
+import { AuthenticationEntity } from '../../../domain/authentication.entity';
 import { ValidateRefreshTokenQuery } from './valiate-refresh-token.query';
 
 @QueryHandler(ValidateRefreshTokenQuery)

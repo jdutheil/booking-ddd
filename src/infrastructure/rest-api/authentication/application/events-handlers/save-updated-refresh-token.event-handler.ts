@@ -4,13 +4,13 @@ import { OnEvent } from '@nestjs/event-emitter';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepositoryPort,
-} from '../application/ports/authentication.repository.port';
+} from '../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
-} from '../application/ports/password-manager.port';
-import { AuthenticationNotFoundError } from '../domain/authentication.errors';
-import { RefreshTokenUpdatedEvent } from '../domain/events/refresh-token-updated.event';
+} from '../../application/ports/password-manager.port';
+import { AuthenticationNotFoundError } from '../../domain/authentication.errors';
+import { RefreshTokenUpdatedEvent } from '../../domain/events/refresh-token-updated.event';
 
 @Injectable()
 export class SaveUpdatedRefreshTokenEventHandler {

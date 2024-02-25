@@ -5,16 +5,16 @@ import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepositoryPort,
-} from '../../application/ports/authentication.repository.port';
+} from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
-} from '../../application/ports/password-manager.port';
+} from '../../../application/ports/password-manager.port';
 import {
   AuthenticationError,
   AuthenticationInvalidEmailError,
   AuthenticationInvalidPasswordError,
-} from '../../domain/authentication.errors';
+} from '../../../domain/authentication.errors';
 import { ValidateAuthenticationQuery } from './validate-authentication.query';
 
 @QueryHandler(ValidateAuthenticationQuery)
