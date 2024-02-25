@@ -21,7 +21,7 @@ import { JwtQuery } from '../queries/jwt-query/jwt-query';
 import { ValidateRefreshTokenQuery } from '../queries/validate-refresh-token/valiate-refresh-token.query';
 import { Tokens } from './ports/jwt-service.port';
 
-@Controller(routesV1.version)
+@Controller(`${routesV1.version}/${routesV1.auth.root}`)
 @ApiTags('Authentication')
 export class AuthenticationHttpController {
   constructor(

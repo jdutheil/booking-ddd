@@ -9,7 +9,7 @@ export const routesV1 = {
   version: v1,
   auth: {
     root: authRoot,
-    signin: `${authRoot}/signin`,
+    signin: `signin`,
   },
   booker: {
     root: bookersRoot,
