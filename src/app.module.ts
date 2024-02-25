@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BookerModule } from '@src/modules/booker/booker.module';
+import { RestApiModule } from './infrastructure/rest-api/rest-api.module';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 
 @Module({
@@ -13,6 +14,8 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
     }),
 
     EventEmitterModule.forRoot(),
+
+    RestApiModule,
 
     AuthenticationModule,
     BookerModule,

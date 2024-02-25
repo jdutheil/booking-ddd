@@ -7,7 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class CreateBookerRequestDto {
+export class RegisterBookerRequest {
   @ApiProperty({
     example: 'john.doe@gmail.com',
     description: 'Booker email address',
@@ -17,7 +17,6 @@ export class CreateBookerRequestDto {
   @IsEmail()
   readonly email!: string;
 
-  // TODO : move to Authentication ?!
   @ApiProperty({
     example: '$tr0ngP@ssw0rd',
     description:

@@ -9,7 +9,7 @@ import { JWT_SERVICE } from './application/ports/jwt-service.port';
 import { PASSWORD_MANAGER } from './application/ports/password-manager.port';
 import { CreateAuthenticationService } from './commands/create-authentication/create-authentication.service';
 import { AuthenticationMapper } from './domain/authentication.mapper';
-import { CreateAuthenticationWhenBookerCreatedEventHandler } from './events-handlers/create-authentication-when-booker-created.event-handler';
+import { CreateAuthenticationWhenBookerRegisteredEventHandler } from './events-handlers/create-authentication-when-booker-registered.event-handler';
 import { SaveUpdatedRefreshTokenEventHandler } from './events-handlers/save-updated-refresh-token.event-handler';
 import { Argon2PasswordManager } from './infrastructure/argon2-password-manager';
 import { AuthenticationPrismaRepository } from './infrastructure/database/authentication.prisma-repository';
@@ -51,7 +51,7 @@ const queryHandlers: Provider[] = [
   ValidateRefreshTokenQueryHandler,
 ];
 const eventHandlers: Provider[] = [
-  CreateAuthenticationWhenBookerCreatedEventHandler,
+  CreateAuthenticationWhenBookerRegisteredEventHandler,
   SaveUpdatedRefreshTokenEventHandler,
 ];
 

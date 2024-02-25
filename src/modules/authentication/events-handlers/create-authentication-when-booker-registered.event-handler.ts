@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { OnEvent } from '@nestjs/event-emitter';
-import { BookerCreatedEvent } from '@src/modules/booker/domain/events/booker-created.event';
+import { BookerRegisteredEvent } from '@src/modules/booker/domain/events/booker-registered.event';
 import { CreateAuthenticationCommand } from '../commands/create-authentication/create-authentication.command';
 
 @Injectable()
-export class CreateAuthenticationWhenBookerCreatedEventHandler {
+export class CreateAuthenticationWhenBookerRegisteredEventHandler {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @OnEvent(BookerCreatedEvent.eventName)
-  async handle(event: BookerCreatedEvent) {
+  @OnEvent(BookerRegisteredEvent.eventName)
+  async handle(event: BookerRegisteredEvent) {
     const command = new CreateAuthenticationCommand({
       bookerId: event.id,
       email: event.email,

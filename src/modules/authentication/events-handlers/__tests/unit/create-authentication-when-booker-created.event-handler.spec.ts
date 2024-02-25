@@ -1,6 +1,6 @@
 import { CommandBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateAuthenticationWhenBookerCreatedEventHandler } from '../../create-authentication-when-booker-created.event-handler';
+import { CreateAuthenticationWhenBookerCreatedEventHandler } from '../../create-authentication-when-booker-registered.event-handler';
 
 describe('CreateAuthenticationWhenBookerCreatedEventHandler Unit Tests', () => {
   let handler: CreateAuthenticationWhenBookerCreatedEventHandler;
