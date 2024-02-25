@@ -13,7 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
 import { AggregateID } from '@src/libs/ddd';
 import { RefreshTokenUpdatedEvent } from '../domain/events/refresh-token-updated.event';
-import { JwtAuthenticationGuard } from '../infrastructure/security/jwt-authentication.guard';
+import { Public } from '../infrastructure/security/is-public';
 import { JwtRefreshAuthenticationGuard } from '../infrastructure/security/jwt-refresh-authentication.guard';
 import { LocalAuthenticationGuard } from '../infrastructure/security/local-authentication.guard';
 import { TokensResponse } from '../interface/dtos/tokens.response.dto';
@@ -38,6 +38,7 @@ export class AuthenticationHttpController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Wrong credentials',
   })
+  @Public()
   @UseGuards(LocalAuthenticationGuard)
   @Post(routesV1.auth.signin)
   async signin(@Request() req: any): Promise<TokensResponse> {
@@ -48,6 +49,7 @@ export class AuthenticationHttpController {
     return new TokensResponse(tokens);
   }
 
+  @Public()
   @UseGuards(JwtRefreshAuthenticationGuard)
   @Get('refresh')
   async refreshTokens(@Request() req: any): Promise<TokensResponse> {
@@ -82,7 +84,6 @@ export class AuthenticationHttpController {
     return tokens;
   }
 
-  @UseGuards(JwtAuthenticationGuard)
   @Get('test-auth')
   async test(): Promise<string> {
     return 'You are authenticated';

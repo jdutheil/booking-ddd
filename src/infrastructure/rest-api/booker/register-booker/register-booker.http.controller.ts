@@ -16,6 +16,7 @@ import { RegisterBookerCommand } from '@src/modules/booker/application/commands/
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
 import { BookerRegisteredEvent } from '@src/modules/booker/domain/events/booker-registered.event';
 import { Result } from 'oxide.ts';
+import { Public } from '../../authentication/infrastructure/security/is-public';
 import { RegisterBookerRequest } from './register-booker.request';
 
 @Controller(routesV1.version)
@@ -39,6 +40,7 @@ export class RegisterBookerHttpController {
     status: HttpStatus.BAD_REQUEST,
     type: ApiErrorResponse,
   })
+  @Public()
   @Post(routesV1.booker.root)
   async createBooker(
     @Body() registerBookerRequest: RegisterBookerRequest,
