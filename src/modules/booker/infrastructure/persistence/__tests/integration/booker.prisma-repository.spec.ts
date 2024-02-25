@@ -4,7 +4,7 @@ import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { BookerEntity } from '@src/modules/booker/domain/booker.entity';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
 import { BookerMapper } from '@src/modules/booker/domain/booker.mapper';
-import { BookerPrismaRepository } from '../booker.prisma-repository';
+import { BookerPrismaRepository } from './../../booker.prisma-repository';
 
 describe('BookerPrismaRepository Integration Test', () => {
   let bookerPrismaRepository: BookerPrismaRepository;
