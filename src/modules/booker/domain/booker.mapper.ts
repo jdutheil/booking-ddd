@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd/mapper.interface';
-import { BookerModel, bookerSchema } from '../database/booker.model';
+import {
+  BookerModel,
+  bookerSchema,
+} from '../infrastructure/persistence/booker.model';
 import { BookerEntity } from './booker.entity';
 
 @Injectable()

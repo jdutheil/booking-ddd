@@ -1,9 +1,10 @@
-import { RepositoryPort } from '@src/libs/ddd';
 import { Option } from 'oxide.ts';
 import { AuthenticationEntity } from '../../domain/authentication.entity';
 
-export interface AuthenticationRepositoryPort
-  extends RepositoryPort<AuthenticationEntity> {
+export interface AuthenticationRepositoryPort {
+  save(entity: AuthenticationEntity): Promise<void>;
+  update(entity: AuthenticationEntity): Promise<void>;
+  findOneById(id: string): Promise<Option<AuthenticationEntity>>;
   findOneByEmail(email: string): Promise<Option<AuthenticationEntity>>;
 }
 
