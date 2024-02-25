@@ -16,7 +16,7 @@ import { RefreshTokenUpdatedEvent } from '../domain/events/refresh-token-updated
 import { Public } from '../infrastructure/security/is-public';
 import { JwtRefreshAuthenticationGuard } from '../infrastructure/security/jwt-refresh-authentication.guard';
 import { LocalAuthenticationGuard } from '../infrastructure/security/local-authentication.guard';
-import { TokensResponse } from '../interface/dtos/tokens.response.dto';
+import { TokensResponse } from '../presentation/dtos/tokens.response.dto';
 import { Tokens } from './ports/jwt-service.port';
 import { JwtQuery } from './queries/jwt-query/jwt-query';
 import { ValidateRefreshTokenQuery } from './queries/validate-refresh-token/valiate-refresh-token.query';

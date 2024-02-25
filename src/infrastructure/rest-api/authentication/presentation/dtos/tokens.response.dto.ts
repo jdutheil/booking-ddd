@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RefreshToken } from '../../application/ports/jwt-service.port';
-import { AccessToken } from './../../application/ports/jwt-service.port';
+import {
+  AccessToken,
+  RefreshToken,
+} from '../../application/ports/jwt-service.port';
 
 export class TokensResponse {
   @ApiProperty()
