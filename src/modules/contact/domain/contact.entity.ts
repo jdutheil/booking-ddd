@@ -1,6 +1,6 @@
 import { Guard } from '@src/libs/core/guard';
 import { AggregateRoot, EntityID } from '@src/libs/ddd';
-import { Err, Ok, Result } from 'oxide.ts';
+import { Err, Ok, Option, Result } from 'oxide.ts';
 import { ContactError } from './contact.errors';
 import { ContactCreatedEvent } from './events/contact-created.event';
 import { ContactEmail } from './value-objects/contact-email';
@@ -10,8 +10,8 @@ type Phone = string;
 
 export interface ContactProps {
   name: ContactName;
-  email: ContactEmail;
-  phone: Phone;
+  email: Option<ContactEmail>;
+  phone: Option<Phone>;
 }
 
 export class Contact extends AggregateRoot<ContactProps> {
@@ -46,11 +46,11 @@ export class Contact extends AggregateRoot<ContactProps> {
     this.props.name = name;
   }
 
-  public updateEmail(email: ContactEmail): void {
+  public updateEmail(email: Option<ContactEmail>): void {
     this.props.email = email;
   }
 
-  public updatePhone(phone: Phone): void {
+  public updatePhone(phone: Option<Phone>): void {
     this.props.phone = phone;
   }
 }

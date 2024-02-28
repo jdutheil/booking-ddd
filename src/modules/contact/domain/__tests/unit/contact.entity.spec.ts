@@ -9,10 +9,10 @@ describe('Contact Entity', () => {
     const contactProps = {
       name: ContactName.create({
         firstName: Some('John'),
-        lastName: 'Doe',
+        lastName: Some('Doe'),
       }).unwrap(),
-      email: ContactEmail.create('john.doe@mail.com').unwrap(),
-      phone: '1234567890',
+      email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+      phone: Some('1234567890'),
     };
 
     // Act
