@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { QueryHandler } from '@nestjs/cqrs';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
@@ -28,7 +28,7 @@ export class ValidateAuthenticationService {
 
   async execute(
     query: ValidateAuthenticationQuery,
-  ): Promise<Result<AggregateID, AuthenticationError>> {
+  ): Promise<Result<EntityID, AuthenticationError>> {
     const authentication = await this.authenticationRepository.findOneByEmail(
       query.email,
     );

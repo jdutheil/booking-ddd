@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(id: AggregateID) {
+  async validate(id: EntityID) {
     return { id };
   }
 }

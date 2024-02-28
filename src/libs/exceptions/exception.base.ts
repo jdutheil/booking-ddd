@@ -3,8 +3,7 @@ export abstract class ExceptionBase extends Error {
 
   constructor(
     readonly message: string,
-    readonly cause?: Error,
-    readonly metadata?: unknown,
+    public readonly cause?: unknown,
   ) {
     super(message);
   }

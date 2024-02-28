@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import {
   JwtServicePort,
   Tokens,
@@ -14,7 +14,7 @@ export class NestJwtService implements JwtServicePort {
     private configService: ConfigService,
   ) {}
 
-  async getTokens(id: AggregateID): Promise<Tokens> {
+  async getTokens(id: EntityID): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {

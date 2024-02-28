@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { BookerEntity } from '@src/modules/booker/domain/booker.entity';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
 import {
@@ -19,7 +19,7 @@ export class RegisterBookerService implements ICommandHandler {
 
   async execute(
     command: RegisterBookerCommand,
-  ): Promise<Result<AggregateID, BookerAlreadyExistsError>> {
+  ): Promise<Result<EntityID, BookerAlreadyExistsError>> {
     const booker = await BookerEntity.create({ email: command.email });
 
     try {

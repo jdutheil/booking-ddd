@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthenticationAlreadyExistsError } from '@src/infrastructure/rest-api/authentication/domain/authentication.errors';
 import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { Result } from 'oxide.ts';
 import { AUTHENTICATION_REPOSITORY } from '../../../../ports/authentication.repository.port';
@@ -55,7 +55,7 @@ describe('CreateAuthenticationService Unit Tests', () => {
       bookerId: randomUUID(),
     });
 
-    const result: Result<AggregateID, AuthenticationAlreadyExistsError> =
+    const result: Result<EntityID, AuthenticationAlreadyExistsError> =
       await service.execute(authDatas);
     expect(result.isOk()).toBe(true);
     const id = result.unwrap();
@@ -71,7 +71,7 @@ describe('CreateAuthenticationService Unit Tests', () => {
       bookerId: randomUUID(),
     });
 
-    const result: Result<AggregateID, AuthenticationAlreadyExistsError> =
+    const result: Result<EntityID, AuthenticationAlreadyExistsError> =
       await service.execute(authDatas);
     const id = result.unwrap();
 

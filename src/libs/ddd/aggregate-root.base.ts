@@ -10,15 +10,15 @@ export abstract class AggregateRoot<EntityProps> extends Entity<EntityProps> {
     return this._domainEvents;
   }
 
-  protected addEvent(domainEvent: DomainEvent): void {
+  protected addDomainEvent(domainEvent: DomainEvent): void {
     this._domainEvents.push(domainEvent);
   }
 
-  public clearEvents(): void {
+  public clearDomainEvents(): void {
     this._domainEvents = [];
   }
 
-  public async publishEvents(
+  public async publishDomainEvents(
     logger: Logger,
     eventEmitter: EventEmitter2,
   ): Promise<void> {

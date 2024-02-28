@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
@@ -25,7 +25,7 @@ export class CreateAuthenticationService implements ICommandHandler {
 
   async execute(
     command: CreateAuthenticationCommand,
-  ): Promise<Result<AggregateID, AuthenticationAlreadyExistsError>> {
+  ): Promise<Result<EntityID, AuthenticationAlreadyExistsError>> {
     const authentication = await AuthenticationEntity.create({
       bookerId: command.bookerId,
       email: command.email,

@@ -1,9 +1,9 @@
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 
 export class BookerRegisteredEvent {
   static readonly eventName = 'booker.registered' as const;
 
-  readonly id: AggregateID;
+  readonly id: EntityID;
   readonly email: string;
   readonly password: string;
 

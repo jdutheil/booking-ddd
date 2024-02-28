@@ -1,4 +1,4 @@
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 
 export type AccessToken = string;
 export type RefreshToken = string;
@@ -9,7 +9,7 @@ export type Tokens = {
 };
 
 export interface JwtServicePort {
-  getTokens(id: AggregateID): Promise<Tokens>;
+  getTokens(id: EntityID): Promise<Tokens>;
 }
 
 export const JWT_SERVICE = Symbol('JWT_SERVICE');

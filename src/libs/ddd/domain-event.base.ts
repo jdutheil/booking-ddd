@@ -1,18 +1,18 @@
 import { randomUUID } from 'crypto';
-import { AggregateID } from './entity.base';
+import { EntityID } from './entity.base';
 
 type DomainEventMetadata = {
   readonly timestamp: number;
 };
 
 export type DomainEventProps<T> = Omit<T, 'id' | 'metadata'> & {
-  aggregateId: AggregateID;
+  aggregateId: EntityID;
   metadata?: DomainEventMetadata;
 };
 
 export abstract class DomainEvent {
   public readonly id: string;
-  public readonly aggregateId: AggregateID;
+  public readonly aggregateId: EntityID;
   public readonly metadata: DomainEventMetadata;
 
   protected constructor(props: DomainEventProps<DomainEvent>) {

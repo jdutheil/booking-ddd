@@ -11,7 +11,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { RegisterBookerCommand } from '@src/modules/booker/application/commands/register-booker/register-booker.command';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
 import { BookerRegisteredEvent } from '@src/modules/booker/domain/events/booker-registered.event';
@@ -46,7 +46,7 @@ export class RegisterBookerHttpController {
     @Body() registerBookerRequest: RegisterBookerRequest,
   ): Promise<IdResponse> {
     const command = new RegisterBookerCommand(registerBookerRequest);
-    const result: Result<AggregateID, BookerAlreadyExistsError> =
+    const result: Result<EntityID, BookerAlreadyExistsError> =
       await this.commandBus.execute(command);
 
     if (result.isErr()) {

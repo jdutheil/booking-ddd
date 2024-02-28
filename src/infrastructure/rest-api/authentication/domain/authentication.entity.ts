@@ -1,4 +1,4 @@
-import { AggregateID, Entity } from '@src/libs/ddd';
+import { Entity, EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { None, Option, Some } from 'oxide.ts';
 import {
@@ -7,7 +7,7 @@ import {
 } from './authentication.types';
 
 export class AuthenticationEntity extends Entity<AuthenticationProps> {
-  protected readonly _id!: AggregateID;
+  protected readonly _id!: EntityID;
 
   static async create(
     create: CreateAuthenticationProps,
@@ -26,7 +26,7 @@ export class AuthenticationEntity extends Entity<AuthenticationProps> {
 
   validate() {}
 
-  get bookerId(): AggregateID {
+  get bookerId(): EntityID {
     return this._props.bookerId;
   }
 

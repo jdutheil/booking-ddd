@@ -1,9 +1,9 @@
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { QueryBase } from '@src/libs/ddd/query.base';
 import { RefreshToken } from '../../ports/jwt-service.port';
 
 export class ValidateRefreshTokenQuery extends QueryBase {
-  readonly authenticationId: AggregateID;
+  readonly authenticationId: EntityID;
   readonly refreshToken: RefreshToken;
 
   constructor(props: ValidateRefreshTokenQuery) {

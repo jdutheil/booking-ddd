@@ -9,7 +9,7 @@ import {
 } from '@src/infrastructure/rest-api/authentication/domain/authentication.errors';
 import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { Result } from 'oxide.ts';
 import { ValidateAuthenticationQuery } from '../../validate-authentication.query';
@@ -60,7 +60,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
       password: 'password',
     });
 
-    const result: Result<AggregateID, AuthenticationError> =
+    const result: Result<EntityID, AuthenticationError> =
       await service.execute(authenticationQuery);
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr()).toBeInstanceOf(AuthenticationInvalidEmailError);
@@ -80,7 +80,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
       password: 'wrongPassword',
     });
 
-    const result: Result<AggregateID, AuthenticationError> =
+    const result: Result<EntityID, AuthenticationError> =
       await service.execute(authenticationQuery);
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr()).toBeInstanceOf(
@@ -102,7 +102,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
       password: 'password',
     });
 
-    const result: Result<AggregateID, AuthenticationError> =
+    const result: Result<EntityID, AuthenticationError> =
       await service.execute(authenticationQuery);
     expect(result.isOk()).toBe(true);
     expect(result.unwrap()).not.toBeNull();
