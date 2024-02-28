@@ -1,3 +1,4 @@
+import { Guard } from '@src/libs/core/guard';
 import { ValueObject } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
 import { ContactError } from '../contact.errors';
@@ -16,6 +17,11 @@ export class ContactEmail extends ValueObject<ContactEmailProps> {
   }
 
   public static create(email: string): Result<ContactEmail, ContactError> {
+    const emailResult = Guard.againstNullOrUndefined(email, 'email');
+    if (emailResult.isErr()) {
+      return Err(new ContactError(emailResult.unwrapErr()));
+    }
+
     if (!this.isValidEmail(email)) {
       return Err(new ContactError('Invalid email'));
     }

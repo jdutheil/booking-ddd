@@ -1,12 +1,15 @@
 import { Contact } from '../../contact.entity';
 import { ContactEmail } from '../../value-objects/contact-email';
+import { ContactName } from '../../value-objects/contact-name';
 
 describe('Contact Entity', () => {
   it('should create a new contact', async () => {
     // Arrange
     const contactProps = {
-      firstName: 'John',
-      lastName: 'Doe',
+      name: ContactName.create({
+        firstName: 'John',
+        lastName: 'Doe',
+      }).unwrap(),
       email: ContactEmail.create('john.doe@mail.com').unwrap(),
       phone: '1234567890',
     };

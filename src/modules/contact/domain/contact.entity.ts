@@ -4,14 +4,12 @@ import { Err, Ok, Result } from 'oxide.ts';
 import { ContactError } from './contact.errors';
 import { ContactCreatedEvent } from './events/contact-created.event';
 import { ContactEmail } from './value-objects/contact-email';
+import { ContactName } from './value-objects/contact-name';
 
-type FirstName = string;
-type LastName = string;
 type Phone = string;
 
 export interface ContactProps {
-  firstName: FirstName;
-  lastName: LastName;
+  name: ContactName;
   email: ContactEmail;
   phone: Phone;
 }
@@ -27,8 +25,7 @@ export class Contact extends AggregateRoot<ContactProps> {
   ): Promise<Result<Contact, ContactError>> {
     const guardResult = Guard.againstNullOrUndefinedBulk([
       { argument: props.email, argumentName: 'email' },
-      { argument: props.firstName, argumentName: 'firstname' },
-      { argument: props.lastName, argumentName: 'lastname' },
+      { argument: props.name, argumentName: 'name' },
       { argument: props.phone, argumentName: 'phone' },
     ]);
     if (guardResult.isErr()) {
