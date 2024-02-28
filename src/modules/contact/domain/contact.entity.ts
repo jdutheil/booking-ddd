@@ -19,10 +19,10 @@ export class Contact extends AggregateRoot<ContactProps> {
     super(props, id);
   }
 
-  static async create(
+  static create(
     props: ContactProps,
     id?: EntityID,
-  ): Promise<Result<Contact, ContactError>> {
+  ): Result<Contact, ContactError> {
     const guardResult = Guard.againstNullOrUndefinedBulk([
       { argument: props.email, argumentName: 'email' },
       { argument: props.name, argumentName: 'name' },
@@ -40,5 +40,17 @@ export class Contact extends AggregateRoot<ContactProps> {
     }
 
     return Ok(contact);
+  }
+
+  public updateName(name: ContactName): void {
+    this.props.name = name;
+  }
+
+  public updateEmail(email: ContactEmail): void {
+    this.props.email = email;
+  }
+
+  public updatePhone(phone: Phone): void {
+    this.props.phone = phone;
   }
 }

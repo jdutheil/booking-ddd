@@ -1,3 +1,4 @@
+import { Some } from 'oxide.ts';
 import {
   ContactName,
   ContactNameProps,
@@ -6,7 +7,7 @@ import {
 describe('ContactName Value Object', () => {
   it('should create a contact', () => {
     const contactNameProps: ContactNameProps = {
-      firstName: 'John',
+      firstName: Some('John'),
       lastName: 'Doe',
     };
 
@@ -16,7 +17,7 @@ describe('ContactName Value Object', () => {
 
   it('should return error if lastName is empty', () => {
     const contactNameProps: ContactNameProps = {
-      firstName: 'John',
+      firstName: Some('John'),
       lastName: '',
     };
 

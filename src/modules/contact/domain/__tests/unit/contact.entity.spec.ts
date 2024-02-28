@@ -1,3 +1,4 @@
+import { Some } from 'oxide.ts';
 import { Contact } from '../../contact.entity';
 import { ContactEmail } from '../../value-objects/contact-email';
 import { ContactName } from '../../value-objects/contact-name';
@@ -7,7 +8,7 @@ describe('Contact Entity', () => {
     // Arrange
     const contactProps = {
       name: ContactName.create({
-        firstName: 'John',
+        firstName: Some('John'),
         lastName: 'Doe',
       }).unwrap(),
       email: ContactEmail.create('john.doe@mail.com').unwrap(),

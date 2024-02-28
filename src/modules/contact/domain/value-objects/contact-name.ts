@@ -1,18 +1,18 @@
 import { Guard } from '@src/libs/core/guard';
 import { ValueObject } from '@src/libs/ddd';
-import { Err, Ok, Result } from 'oxide.ts';
+import { Err, Ok, Option, Result } from 'oxide.ts';
 import { ContactError } from '../contact.errors';
 
 type FirstName = string;
 type LastName = string;
 
 export interface ContactNameProps {
-  firstName?: FirstName;
+  firstName: Option<FirstName>;
   lastName: LastName;
 }
 
 export class ContactName extends ValueObject<ContactNameProps> {
-  get firstName(): FirstName | undefined {
+  get firstName(): Option<FirstName> {
     return this.props.firstName;
   }
 
@@ -21,7 +21,7 @@ export class ContactName extends ValueObject<ContactNameProps> {
   }
 
   get fullName(): string {
-    return `${this.props.firstName} ${this.props.lastName}`.trim();
+    return `${this.props.firstName.unwrapOr('')} ${this.props.lastName}`.trim();
   }
 
   private constructor(props: ContactNameProps) {
