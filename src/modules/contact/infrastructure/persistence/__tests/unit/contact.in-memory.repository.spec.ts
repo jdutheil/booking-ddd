@@ -70,8 +70,9 @@ describe('ContactInMemoryRepository', () => {
     });
   });
 
-  describe('Find a contact by its ID', () => {
+  describe('Find a contact', () => {
     let knownContactId: EntityID;
+    let knownContactEmail: string;
 
     beforeAll(async () => {
       const contact = Contact.create({
@@ -85,9 +86,14 @@ describe('ContactInMemoryRepository', () => {
       await repository.save(contact);
 
       knownContactId = contact.id;
+      knownContactEmail = contact.props.email.unwrap().value;
     });
 
-    it('should return the contact if it exists', async () => {
+    afterAll(() => {
+      repository.contacts = [];
+    });
+
+    it('given an existing ID, should return the contact', async () => {
       // Act
       const result = await repository.findOneById(knownContactId);
 
@@ -96,12 +102,87 @@ describe('ContactInMemoryRepository', () => {
       expect(result.unwrap().id).toEqual(knownContactId);
     });
 
-    it('should return error if the contact does not exist', async () => {
+    it('given an unknown ID, should return an error', async () => {
       // Act
       const result = await repository.findOneById(randomUUID());
 
       // Assert
       expect(result.isNone()).toBe(true);
+    });
+
+    it('given an existing email, should return the contact', async () => {
+      // Act
+      const result = await repository.findOneByEmail(knownContactEmail);
+
+      // Assert
+      expect(result.isSome()).toBe(true);
+      expect(result.unwrap().props.email.unwrap().value).toEqual(
+        knownContactEmail,
+      );
+    });
+
+    it('given an unknown email, should return an error', async () => {
+      // Act
+      const result = await repository.findOneByEmail('unknown@mail.com');
+
+      // Assert
+      expect(result.isNone()).toBe(true);
+    });
+  });
+
+  describe('Does a contact exist', () => {
+    let knownContactId: EntityID;
+    let knownContactEmail: string;
+
+    beforeAll(async () => {
+      const contact = Contact.create({
+        name: ContactName.create({
+          firstName: Some('John'),
+          lastName: Some('Doe'),
+        }).unwrap(),
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Some('123456789'),
+      }).unwrap();
+      await repository.save(contact);
+
+      knownContactId = contact.id;
+      knownContactEmail = contact.props.email.unwrap().value;
+    });
+
+    afterAll(() => {
+      repository.contacts = [];
+    });
+
+    it('given an existing ID, should return true', async () => {
+      // Act
+      const result = await repository.idExists(knownContactId);
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it('given an unknown ID, should return false', async () => {
+      // Act
+      const result = await repository.idExists(randomUUID());
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    it('given an existing email, should return true', async () => {
+      // Act
+      const result = await repository.emailExists(knownContactEmail);
+
+      // Assert
+      expect(result).toBe(true);
+    });
+
+    it('given an unknown email, should return false', async () => {
+      // Act
+      const result = await repository.emailExists('unknown@mail.com');
+
+      // Assert
+      expect(result).toBe(false);
     });
   });
 });

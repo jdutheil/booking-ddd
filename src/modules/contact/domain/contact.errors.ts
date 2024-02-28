@@ -8,3 +8,12 @@ export class ContactError extends ExceptionBase {
     super(message || ContactError.message, cause);
   }
 }
+
+export class ContactEmailAlreadyExistsError extends ContactError {
+  static readonly message: string = 'Contact email already exists';
+  public readonly code: string = 'CONTACT.EMAIL_ALREADY_EXISTS';
+
+  constructor(cause?: unknown) {
+    super(ContactEmailAlreadyExistsError.message, cause);
+  }
+}

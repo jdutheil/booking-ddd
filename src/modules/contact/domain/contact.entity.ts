@@ -8,6 +8,7 @@ import { ContactName } from './value-objects/contact-name';
 
 type Phone = string;
 
+// TODO : add bookerId !
 export interface ContactProps {
   name: ContactName;
   email: Option<ContactEmail>;
@@ -15,6 +16,18 @@ export interface ContactProps {
 }
 
 export class Contact extends AggregateRoot<ContactProps> {
+  get name(): ContactName {
+    return this.props.name;
+  }
+
+  get email(): Option<ContactEmail> {
+    return this.props.email;
+  }
+
+  get phone(): Option<Phone> {
+    return this.props.phone;
+  }
+
   private constructor(props: ContactProps, id?: EntityID) {
     super(props, id);
   }

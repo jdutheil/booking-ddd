@@ -3,9 +3,9 @@ import { Option } from 'oxide.ts';
 
 export class CreateContactCommand extends Command {
   firstName: Option<string>;
-  lastName: string;
-  email: string;
-  phone: string;
+  lastName: Option<string>;
+  email: Option<string>;
+  phone: Option<string>;
 
   constructor(props: CommandProps<CreateContactCommand>) {
     super(props);
