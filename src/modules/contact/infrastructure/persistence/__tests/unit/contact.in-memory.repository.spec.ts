@@ -30,10 +30,10 @@ describe('ContactInMemoryRepository', () => {
       const contact = Contact.create({
         name: ContactName.create({
           firstName: Some('John'),
-          lastName: 'Doe',
+          lastName: Some('Doe'),
         }).unwrap(),
-        email: ContactEmail.create('john.doe@mail.com').unwrap(),
-        phone: '123456789',
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Some('123456789'),
       }).unwrap();
 
       const contactsCount = repository.contacts.length;
@@ -50,14 +50,16 @@ describe('ContactInMemoryRepository', () => {
       const contact = Contact.create({
         name: ContactName.create({
           firstName: Some('John'),
-          lastName: 'Doe',
+          lastName: Some('Doe'),
         }).unwrap(),
-        email: ContactEmail.create('john.doe@mail.com').unwrap(),
-        phone: '123456789',
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Some('123456789'),
       }).unwrap();
       await repository.save(contact);
 
-      contact.updateEmail(ContactEmail.create('another@mail.com').unwrap());
+      contact.updateEmail(
+        Some(ContactEmail.create('another@mail.com').unwrap()),
+      );
       const contactsCount = repository.contacts.length;
 
       // Act
@@ -75,10 +77,10 @@ describe('ContactInMemoryRepository', () => {
       const contact = Contact.create({
         name: ContactName.create({
           firstName: Some('John'),
-          lastName: 'Doe',
+          lastName: Some('Doe'),
         }).unwrap(),
-        email: ContactEmail.create('john.doe@mail.com').unwrap(),
-        phone: '123456789',
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Some('123456789'),
       }).unwrap();
       await repository.save(contact);
 
