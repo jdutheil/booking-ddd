@@ -8,8 +8,8 @@ import { ContactName } from './value-objects/contact-name';
 
 type Phone = string;
 
-// TODO : add bookerId !
 export interface ContactProps {
+  bookerId: EntityID;
   name: Option<ContactName>;
   email: Option<ContactEmail>;
   phone: Option<Phone>;
@@ -37,6 +37,7 @@ export class Contact extends AggregateRoot<ContactProps> {
     id?: EntityID,
   ): Result<Contact, ContactError> {
     const guardResult = Guard.againstNullOrUndefinedBulk([
+      { argument: props.bookerId, argumentName: 'bookerId' },
       { argument: props.email, argumentName: 'email' },
       { argument: props.name, argumentName: 'name' },
       { argument: props.phone, argumentName: 'phone' },

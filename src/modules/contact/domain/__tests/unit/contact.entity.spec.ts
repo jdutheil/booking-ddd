@@ -7,6 +7,7 @@ import { ContactName } from '../../value-objects/contact-name';
 
 describe('Contact Entity', () => {
   const contactProps: ContactProps = {
+    bookerId: randomUUID(),
     name: Some(
       ContactName.create({
         firstName: Some('John'),
@@ -55,6 +56,7 @@ describe('Contact Entity', () => {
   it('should return error if name and email are None', async () => {
     // Arrange
     const props: ContactProps = {
+      bookerId: randomUUID(),
       name: None,
       email: None,
       phone: Some('1234567890'),
