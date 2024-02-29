@@ -28,10 +28,13 @@ describe('ContactInMemoryRepository', () => {
     it('should insert a new contact', async () => {
       // Arrange
       const contact = Contact.create({
-        name: ContactName.create({
-          firstName: Some('John'),
-          lastName: Some('Doe'),
-        }).unwrap(),
+        bookerId: randomUUID(),
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
         email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
@@ -48,10 +51,13 @@ describe('ContactInMemoryRepository', () => {
     it('should update an existing contact', async () => {
       // Arrange
       const contact = Contact.create({
-        name: ContactName.create({
-          firstName: Some('John'),
-          lastName: Some('Doe'),
-        }).unwrap(),
+        bookerId: randomUUID(),
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
         email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
@@ -76,10 +82,13 @@ describe('ContactInMemoryRepository', () => {
 
     beforeAll(async () => {
       const contact = Contact.create({
-        name: ContactName.create({
-          firstName: Some('John'),
-          lastName: Some('Doe'),
-        }).unwrap(),
+        bookerId: randomUUID(),
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
         email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
@@ -136,10 +145,13 @@ describe('ContactInMemoryRepository', () => {
 
     beforeAll(async () => {
       const contact = Contact.create({
-        name: ContactName.create({
-          firstName: Some('John'),
-          lastName: Some('Doe'),
-        }).unwrap(),
+        bookerId: randomUUID(),
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
         email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();

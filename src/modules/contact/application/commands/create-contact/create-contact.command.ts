@@ -1,17 +1,18 @@
-import { Command, CommandProps } from '@src/libs/ddd';
+import { Command, CommandProps, EntityID } from '@src/libs/ddd';
+import { ContactName } from '@src/modules/contact/domain/value-objects/contact-name';
 import { Option } from 'oxide.ts';
 
 export class CreateContactCommand extends Command {
-  firstName: Option<string>;
-  lastName: Option<string>;
+  bookerId: EntityID;
+  name: Option<ContactName>;
   email: Option<string>;
   phone: Option<string>;
 
   constructor(props: CommandProps<CreateContactCommand>) {
     super(props);
 
-    this.firstName = props.firstName;
-    this.lastName = props.lastName;
+    this.bookerId = props.bookerId;
+    this.name = props.name;
     this.email = props.email;
     this.phone = props.phone;
   }
