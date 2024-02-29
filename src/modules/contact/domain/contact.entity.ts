@@ -10,13 +10,13 @@ type Phone = string;
 
 // TODO : add bookerId !
 export interface ContactProps {
-  name: ContactName;
+  name: Option<ContactName>;
   email: Option<ContactEmail>;
   phone: Option<Phone>;
 }
 
 export class Contact extends AggregateRoot<ContactProps> {
-  get name(): ContactName {
+  get name(): Option<ContactName> {
     return this.props.name;
   }
 
@@ -45,6 +45,10 @@ export class Contact extends AggregateRoot<ContactProps> {
       return Err(new ContactError(guardResult.unwrapErr()));
     }
 
+    if (this.nameAndEmailAreNone(props.name, props.email)) {
+      return Err(new ContactError('Name and email cannot be both empty'));
+    }
+
     const isNew = !id;
     const contact = new Contact(props, id);
 
@@ -55,7 +59,14 @@ export class Contact extends AggregateRoot<ContactProps> {
     return Ok(contact);
   }
 
-  public updateName(name: ContactName): void {
+  private static nameAndEmailAreNone(
+    name: Option<ContactName>,
+    email: Option<ContactEmail>,
+  ): boolean {
+    return name.isNone() && email.isNone();
+  }
+
+  public updateName(name: Option<ContactName>): void {
     this.props.name = name;
   }
 

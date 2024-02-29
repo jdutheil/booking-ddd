@@ -1,20 +1,23 @@
-import { Some } from 'oxide.ts';
-import { Contact } from '../../contact.entity';
+import { randomUUID } from 'crypto';
+import { None, Some } from 'oxide.ts';
+import { Contact, ContactProps } from '../../contact.entity';
+import { ContactCreatedEvent } from '../../events/contact-created.event';
 import { ContactEmail } from '../../value-objects/contact-email';
 import { ContactName } from '../../value-objects/contact-name';
 
 describe('Contact Entity', () => {
-  it('should create a new contact', async () => {
-    // Arrange
-    const contactProps = {
-      name: ContactName.create({
+  const contactProps: ContactProps = {
+    name: Some(
+      ContactName.create({
         firstName: Some('John'),
         lastName: Some('Doe'),
       }).unwrap(),
-      email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
-      phone: Some('1234567890'),
-    };
+    ),
+    email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+    phone: Some('1234567890'),
+  };
 
+  it('should create a new contact', async () => {
     // Act
     const result = await Contact.create(contactProps);
 
@@ -25,6 +28,42 @@ describe('Contact Entity', () => {
     expect(contact).toBeInstanceOf(Contact);
     expect(contact.id).not.toBeNull();
 
-    // TODO : test events !
+    const createdEventExists = contact.domainEvents.some(
+      (event) => event instanceof ContactCreatedEvent,
+    );
+    expect(createdEventExists).toBe(true);
+  });
+
+  it('should create a contact entity, but not raise a ContactCreated event', async () => {
+    // Arrange
+    const existingId = randomUUID();
+
+    // Act
+    const result = await Contact.create(contactProps, existingId);
+
+    // Assert
+    expect(result.isOk()).toBe(true);
+    const contact = result.unwrap();
+    expect(contact.id).toBe(existingId);
+
+    const createdEventExists = contact.domainEvents.some(
+      (event) => event instanceof ContactCreatedEvent,
+    );
+    expect(createdEventExists).toBe(false);
+  });
+
+  it('should return error if name and email are None', async () => {
+    // Arrange
+    const props: ContactProps = {
+      name: None,
+      email: None,
+      phone: Some('1234567890'),
+    };
+
+    // Act
+    const result = await Contact.create(props);
+
+    // Assert
+    expect(result.isErr()).toBe(true);
   });
 });
