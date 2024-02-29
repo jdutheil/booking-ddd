@@ -21,7 +21,7 @@ describe('ContactInMemoryRepository', () => {
   });
 
   describe('Insert or update a Contact', () => {
-    beforeEach(() => {
+    afterEach(() => {
       repository.contacts = [];
     });
 
@@ -79,6 +79,7 @@ describe('ContactInMemoryRepository', () => {
   describe('Find a contact', () => {
     let knownContactId: EntityID;
     let knownContactEmail: string;
+    let knownContactBookerId: EntityID;
 
     beforeAll(async () => {
       const contact = Contact.create({
@@ -95,7 +96,8 @@ describe('ContactInMemoryRepository', () => {
       await repository.save(contact);
 
       knownContactId = contact.id;
-      knownContactEmail = contact.props.email.unwrap().value;
+      knownContactEmail = contact.email.unwrap().value;
+      knownContactBookerId = contact.bookerId;
     });
 
     afterAll(() => {
@@ -121,7 +123,10 @@ describe('ContactInMemoryRepository', () => {
 
     it('given an existing email, should return the contact', async () => {
       // Act
-      const result = await repository.findOneByEmail(knownContactEmail);
+      const result = await repository.findOneByEmailForBooker(
+        knownContactEmail,
+        knownContactBookerId,
+      );
 
       // Assert
       expect(result.isSome()).toBe(true);
@@ -132,7 +137,21 @@ describe('ContactInMemoryRepository', () => {
 
     it('given an unknown email, should return an error', async () => {
       // Act
-      const result = await repository.findOneByEmail('unknown@mail.com');
+      const result = await repository.findOneByEmailForBooker(
+        'unknown@mail.com',
+        knownContactBookerId,
+      );
+
+      // Assert
+      expect(result.isNone()).toBe(true);
+    });
+
+    it('given an existing email for a different booker, should return an error', async () => {
+      // Act
+      const result = await repository.findOneByEmailForBooker(
+        knownContactEmail,
+        randomUUID(),
+      );
 
       // Assert
       expect(result.isNone()).toBe(true);
@@ -142,6 +161,7 @@ describe('ContactInMemoryRepository', () => {
   describe('Does a contact exist', () => {
     let knownContactId: EntityID;
     let knownContactEmail: string;
+    let knownContactBookerId: EntityID;
 
     beforeAll(async () => {
       const contact = Contact.create({
@@ -159,6 +179,7 @@ describe('ContactInMemoryRepository', () => {
 
       knownContactId = contact.id;
       knownContactEmail = contact.props.email.unwrap().value;
+      knownContactBookerId = contact.props.bookerId;
     });
 
     afterAll(() => {
@@ -183,7 +204,10 @@ describe('ContactInMemoryRepository', () => {
 
     it('given an existing email, should return true', async () => {
       // Act
-      const result = await repository.emailExists(knownContactEmail);
+      const result = await repository.emailExistsForBooker(
+        knownContactEmail,
+        knownContactBookerId,
+      );
 
       // Assert
       expect(result).toBe(true);
@@ -191,7 +215,21 @@ describe('ContactInMemoryRepository', () => {
 
     it('given an unknown email, should return false', async () => {
       // Act
-      const result = await repository.emailExists('unknown@mail.com');
+      const result = await repository.emailExistsForBooker(
+        'unknown@mail.com',
+        knownContactBookerId,
+      );
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    it('given an existing email for a different booker, should return false', async () => {
+      // Act
+      const result = await repository.emailExistsForBooker(
+        knownContactEmail,
+        randomUUID(),
+      );
 
       // Assert
       expect(result).toBe(false);

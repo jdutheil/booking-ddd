@@ -6,13 +6,11 @@ import {
   ContactEmailAlreadyExistsError,
   ContactError,
 } from '@src/modules/contact/domain/contact.errors';
-import { ContactEmail } from '@src/modules/contact/domain/value-objects/contact-email';
-import { ContactName } from '@src/modules/contact/domain/value-objects/contact-name';
 import {
   CONTACT_REPOSITORY,
   ContactRepository,
 } from '@src/modules/contact/infrastructure/persistence/contact.repository';
-import { Err, None, Ok, Result, Some } from 'oxide.ts';
+import { Err, Ok, Result } from 'oxide.ts';
 import { CreateContactCommand } from './create-contact.command';
 
 @CommandHandler(CreateContactCommand)
@@ -25,11 +23,12 @@ export class CreateContactService implements ICommandHandler {
   async execute(
     command: CreateContactCommand,
   ): Promise<Result<EntityID, ContactError>> {
-    const { firstName, lastName, email, phone } = command;
+    const { bookerId, name, email, phone } = command;
 
     if (email.isSome()) {
-      const emailExists = await this.contactRepository.emailExists(
-        email.unwrap(),
+      const emailExists = await this.contactRepository.emailExistsForBooker(
+        email.unwrap().value,
+        bookerId,
       );
       if (emailExists) {
         return Err(new ContactEmailAlreadyExistsError(email));
@@ -37,14 +36,10 @@ export class CreateContactService implements ICommandHandler {
     }
 
     const contactResult = await Contact.create({
-      name: ContactName.create({
-        firstName,
-        lastName,
-      }).unwrap(),
-      email: email.isSome()
-        ? Some(ContactEmail.create(email.unwrap()).unwrap())
-        : None,
-      phone: phone.isSome() ? Some(phone.unwrap()) : None,
+      bookerId,
+      name,
+      email,
+      phone,
     });
 
     if (contactResult.isErr()) {

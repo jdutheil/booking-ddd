@@ -5,6 +5,7 @@ import { ContactEmail } from '@src/modules/contact/domain/value-objects/contact-
 import { ContactName } from '@src/modules/contact/domain/value-objects/contact-name';
 import { ContactInMemoryRepository } from '@src/modules/contact/infrastructure/persistence/contact.in-memory.repository';
 import { CONTACT_REPOSITORY } from '@src/modules/contact/infrastructure/persistence/contact.repository';
+import { randomUUID } from 'crypto';
 import { Some } from 'oxide.ts';
 import { CreateContactCommand } from '../create-contact.command';
 import { CreateContactService } from '../create-contact.service';
@@ -38,21 +39,30 @@ describe('Create Contact Service', () => {
       const existingEmail = 'john.doe@mail.com';
 
       // Arrange
-      const existingContact = await Contact.create({
-        name: ContactName.create({
-          firstName: Some('John'),
-          lastName: Some('Doe'),
-        }).unwrap(),
+      const existingContactResult = await Contact.create({
+        bookerId: randomUUID(),
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
         email: Some(ContactEmail.create(existingEmail).unwrap()),
         phone: Some('111'),
       });
-      await repository.save(existingContact.unwrap());
+      const existingContact = existingContactResult.unwrap();
+      await repository.save(existingContact);
 
       const command = new CreateContactCommand({
-        firstName: Some('John'),
-        lastName: Some('Doe'),
-        email: Some(existingEmail),
-        phone: Some('1234567890'),
+        bookerId: existingContact.bookerId,
+        name: Some(
+          ContactName.create({
+            firstName: Some('Jane'),
+            lastName: Some('Dine'),
+          }).unwrap(),
+        ),
+        email: existingContact.email,
+        phone: Some('00'),
       });
 
       // Act
@@ -66,9 +76,14 @@ describe('Create Contact Service', () => {
     it('should create a new contact and emit ContactCreated event', async () => {
       // Arrange
       const command = new CreateContactCommand({
-        firstName: Some('John'),
-        lastName: Some('Doe'),
-        email: Some('john.doe@mail.com'),
+        bookerId: randomUUID(),
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
         phone: Some('1234567890'),
       });
       const contactsCount = repository.contacts.length;

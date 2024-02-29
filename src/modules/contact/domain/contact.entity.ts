@@ -6,16 +6,20 @@ import { ContactCreatedEvent } from './events/contact-created.event';
 import { ContactEmail } from './value-objects/contact-email';
 import { ContactName } from './value-objects/contact-name';
 
-type Phone = string;
+export type ContactPhone = string;
 
 export interface ContactProps {
   bookerId: EntityID;
   name: Option<ContactName>;
   email: Option<ContactEmail>;
-  phone: Option<Phone>;
+  phone: Option<ContactPhone>;
 }
 
 export class Contact extends AggregateRoot<ContactProps> {
+  get bookerId(): EntityID {
+    return this.props.bookerId;
+  }
+
   get name(): Option<ContactName> {
     return this.props.name;
   }
@@ -24,7 +28,7 @@ export class Contact extends AggregateRoot<ContactProps> {
     return this.props.email;
   }
 
-  get phone(): Option<Phone> {
+  get phone(): Option<ContactPhone> {
     return this.props.phone;
   }
 
@@ -75,7 +79,7 @@ export class Contact extends AggregateRoot<ContactProps> {
     this.props.email = email;
   }
 
-  public updatePhone(phone: Option<Phone>): void {
+  public updatePhone(phone: Option<ContactPhone>): void {
     this.props.phone = phone;
   }
 }

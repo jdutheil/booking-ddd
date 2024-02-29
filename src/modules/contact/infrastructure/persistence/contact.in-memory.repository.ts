@@ -27,18 +27,24 @@ export class ContactInMemoryRepository implements ContactRepository {
     return contact.isSome();
   }
 
-  async emailExists(email: string): Promise<boolean> {
-    const contact = await this.findOneByEmail(email);
+  async emailExistsForBooker(
+    email: string,
+    bookerId: EntityID,
+  ): Promise<boolean> {
+    const contact = await this.findOneByEmailForBooker(email, bookerId);
     return contact.isSome();
   }
 
-  async findOneByEmail(email: string): Promise<Option<Contact>> {
+  async findOneByEmailForBooker(
+    email: string,
+    bookerId: EntityID,
+  ): Promise<Option<Contact>> {
     const contact = this.contacts.find((contact: Contact) => {
       if (contact.email.isNone()) {
         return false;
       } else {
         const emailValue = contact.email.unwrap().value;
-        return emailValue === email;
+        return emailValue === email && contact.bookerId === bookerId;
       }
     });
 
