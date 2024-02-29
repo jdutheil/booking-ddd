@@ -33,7 +33,7 @@ export class ContactInMemoryRepository implements ContactRepository {
   }
 
   async findOneByEmail(email: string): Promise<Option<Contact>> {
-    const contact = this.contacts.find((contact) => {
+    const contact = this.contacts.find((contact: Contact) => {
       if (contact.email.isNone()) {
         return false;
       } else {
