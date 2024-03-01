@@ -12,6 +12,7 @@ import { ContactMapper } from './../../../../domain/contact.mapper';
 describe('ContactPrismaRepository Integration Test', () => {
   let contactPrismaRepository: ContactPrismaRepository;
   let prismaService: PrismaService;
+  let existingBookerId: EntityID;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,6 +24,11 @@ describe('ContactPrismaRepository Integration Test', () => {
       ContactPrismaRepository,
     );
     prismaService = module.get<PrismaService>(PrismaService);
+
+    const booker = await prismaService.booker.create({
+      data: { email: 'test@test.com' },
+    });
+    existingBookerId = booker.id;
   });
 
   afterAll(async () => {
@@ -33,19 +39,6 @@ describe('ContactPrismaRepository Integration Test', () => {
   });
 
   describe('save', () => {
-    let existingBookerId: EntityID;
-
-    beforeAll(async () => {
-      const booker = await prismaService.booker.create({
-        data: { email: 'test@test.com' },
-      });
-      existingBookerId = booker.id;
-    });
-
-    afterAll(async () => {
-      await prismaService.booker.deleteMany();
-    });
-
     afterEach(async () => {
       await prismaService.contact.deleteMany();
     });
@@ -79,6 +72,79 @@ describe('ContactPrismaRepository Integration Test', () => {
 
       expect(newContact).toBeDefined();
       expect(newContact?.id).toBe(contact.id);
+    });
+
+    it('should update an existing contact', async () => {
+      // Arrange
+      const contactResult = Contact.create({
+        bookerId: existingBookerId,
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Some('123456789'),
+      });
+      const contact = contactResult.unwrap();
+      await contactPrismaRepository.save(contact);
+
+      const contactsCount = await prismaService.contact.count();
+
+      // Act
+      const newContactName = Some(
+        ContactName.create({
+          firstName: Some('Jane'),
+          lastName: Some('Dine'),
+        }).unwrap(),
+      );
+      contact.changeName(newContactName);
+
+      await contactPrismaRepository.save(contact);
+
+      // Assert
+      const newContactsCount = await prismaService.contact.count();
+      expect(newContactsCount).toBe(contactsCount);
+
+      const contactFromDb = await prismaService.contact.findUnique({
+        where: { id: contact.id },
+      });
+      expect(contactFromDb?.firstName).toBe(
+        newContactName.unwrap().firstName.unwrap(),
+      );
+      expect(contactFromDb?.lastName).toBe(
+        newContactName.unwrap().lastName.unwrap(),
+      );
+    });
+  });
+
+  describe('idExists', () => {
+    afterEach(async () => {
+      await prismaService.contact.deleteMany();
+    });
+
+    it('should return true if contact exists', async () => {
+      // Arrange
+      const contactResult = Contact.create({
+        bookerId: existingBookerId,
+        name: Some(
+          ContactName.create({
+            firstName: Some('John'),
+            lastName: Some('Doe'),
+          }).unwrap(),
+        ),
+        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Some('123456789'),
+      });
+      const contact = contactResult.unwrap();
+      await contactPrismaRepository.save(contact);
+
+      // Act
+      const result = await contactPrismaRepository.idExists(contact.id);
+
+      // Assert
+      expect(result).toBe(true);
     });
   });
 });

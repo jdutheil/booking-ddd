@@ -18,7 +18,15 @@ export class ContactPrismaRepository implements ContactRepository {
   async save(contact: Contact): Promise<void> {
     const record = this.mapper.toPersistence(contact);
     try {
-      await this.prisma.contact.create({ data: record });
+      const contactExists = await this.idExists(contact.id);
+      if (contactExists) {
+        await this.prisma.contact.update({
+          where: { id: contact.id },
+          data: record,
+        });
+      } else {
+        await this.prisma.contact.create({ data: record });
+      }
     } catch (error: unknown) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -32,7 +40,11 @@ export class ContactPrismaRepository implements ContactRepository {
   }
 
   async idExists(id: EntityID): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    const contact = await this.prisma.contact.findUnique({
+      where: { id },
+    });
+
+    return contact !== null;
   }
 
   async emailExistsForBooker(

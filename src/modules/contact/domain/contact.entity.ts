@@ -32,6 +32,10 @@ export class Contact extends AggregateRoot<ContactProps> {
     return this.props.phone;
   }
 
+  public changeName(name: Option<ContactName>): void {
+    this.props.name = name;
+  }
+
   private constructor(props: ContactProps, id?: EntityID) {
     super(props, id);
   }
