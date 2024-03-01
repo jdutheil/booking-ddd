@@ -52,4 +52,6 @@ model Contact {
   phone String?
   booker Booker @relation(fields: [bookerId], references: [id])
   bookerId String
+
+  @@unique([bookerId, email])
 }

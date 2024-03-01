@@ -47,21 +47,39 @@ export class ContactPrismaRepository implements ContactRepository {
     return contact !== null;
   }
 
+  async findOneById(id: EntityID): Promise<Option<Contact>> {
+    const contactRecord = await this.prisma.contact.findUnique({
+      where: { id },
+    });
+
+    return Option.from(contactRecord).map(this.mapper.toDomain);
+  }
+
   async emailExistsForBooker(
     email: string,
     bookerId: EntityID,
   ): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
+    const contact = await this.prisma.contact.findFirst({
+      where: {
+        email,
+        bookerId,
+      },
+    });
 
-  async findOneById(id: EntityID): Promise<Option<Contact>> {
-    throw new Error('Method not implemented.');
+    return contact !== null;
   }
 
   async findOneByEmailForBooker(
     email: string,
     bookerId: EntityID,
   ): Promise<Option<Contact>> {
-    throw new Error('Method not implemented.');
+    const contactRecord = await this.prisma.contact.findFirst({
+      where: {
+        email,
+        bookerId,
+      },
+    });
+
+    return Option.from(contactRecord).map(this.mapper.toDomain);
   }
 }
