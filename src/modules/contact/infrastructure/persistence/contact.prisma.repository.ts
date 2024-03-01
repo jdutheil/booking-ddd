@@ -1,16 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { EntityID } from '@src/libs/ddd';
 import { Option } from 'oxide.ts';
 import { Contact } from '../../domain/contact.entity';
+import { ContactError } from '../../domain/contact.errors';
+import { ContactMapper } from '../../domain/contact.mapper';
 import { ContactRepository } from './contact.repository';
 
 @Injectable()
 export class ContactPrismaRepository implements ContactRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mapper: ContactMapper,
+  ) {}
 
   async save(contact: Contact): Promise<void> {
-    throw new Error('Method not implemented.');
+    const record = this.mapper.toPersistence(contact);
+    try {
+      await this.prisma.contact.create({ data: record });
+    } catch (error: unknown) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ContactError('Contact already exists');
+      }
+
+      throw new ContactError('Error saving contact', error);
+    }
   }
 
   async idExists(id: EntityID): Promise<boolean> {
