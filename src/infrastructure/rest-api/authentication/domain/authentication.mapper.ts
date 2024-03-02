@@ -6,32 +6,38 @@ import {
   AuthenticationModel,
   authenticationSchema,
 } from '../infrastructure/database/authentication.model';
-import { AuthenticationEntity } from './authentication.entity';
+import { Authentication } from './authentication.entity';
+import { AuthenticationError } from './authentication.errors';
 
 @Injectable()
 export class AuthenticationMapper
-  implements Mapper<AuthenticationEntity, AuthenticationModel>
+  implements Mapper<Authentication, AuthenticationModel>
 {
-  toDomain(record: AuthenticationModel): AuthenticationEntity {
-    return new AuthenticationEntity({
-      id: record.id,
-      createdAt: new Date(record.createdAt),
-      updatedAt: new Date(record.updatedAt),
-      props: {
+  toDomain(record: AuthenticationModel): Authentication {
+    const result = Authentication.create(
+      {
         bookerId: record.bookerId,
         email: record.email,
         password: record.password,
         accessToken: record.accessToken ? Some(record.accessToken) : None,
         refreshToken: record.refreshToken ? Some(record.refreshToken) : None,
       },
-    });
+      record.id,
+    );
+
+    if (result.isErr()) {
+      throw new AuthenticationError(
+        'An error occured during Authentication mapping',
+        result.unwrapErr(),
+      );
+    }
+
+    return result.unwrap();
   }
 
-  toPersistence(entity: AuthenticationEntity): AuthenticationModel {
+  toPersistence(entity: Authentication): AuthenticationModel {
     const record: AuthenticationModel = {
       id: entity.id,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
       email: entity.email,
       password: entity.password,
       accessToken: entity.accessToken.isSome()

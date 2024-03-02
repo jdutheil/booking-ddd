@@ -9,7 +9,7 @@ import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
 } from '../../../application/ports/password-manager.port';
-import { AuthenticationEntity } from '../../../domain/authentication.entity';
+import { Authentication } from '../../../domain/authentication.entity';
 import { ValidateRefreshTokenQuery } from './valiate-refresh-token.query';
 
 @QueryHandler(ValidateRefreshTokenQuery)
@@ -22,7 +22,7 @@ export class ValidateRefreshTokenQueryHandler {
   ) {}
 
   async execute(query: ValidateRefreshTokenQuery): Promise<boolean> {
-    const authentication: Option<AuthenticationEntity> =
+    const authentication: Option<Authentication> =
       await this.authenticationRepository.findOneById(query.authenticationId);
     if (
       authentication.isNone() ||

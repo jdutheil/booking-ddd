@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { EntityID } from '@src/libs/ddd';
-import { Err, Ok, Result } from 'oxide.ts';
+import { Err, None, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepositoryPort,
@@ -10,8 +10,11 @@ import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
 } from '../../../application/ports/password-manager.port';
-import { AuthenticationEntity } from '../../../domain/authentication.entity';
-import { AuthenticationAlreadyExistsError } from '../../../domain/authentication.errors';
+import { Authentication } from '../../../domain/authentication.entity';
+import {
+  AuthenticationAlreadyExistsError,
+  AuthenticationError,
+} from '../../../domain/authentication.errors';
 import { CreateAuthenticationCommand } from './create-authentication.command';
 
 @CommandHandler(CreateAuthenticationCommand)
@@ -25,12 +28,24 @@ export class CreateAuthenticationService implements ICommandHandler {
 
   async execute(
     command: CreateAuthenticationCommand,
-  ): Promise<Result<EntityID, AuthenticationAlreadyExistsError>> {
-    const authentication = await AuthenticationEntity.create({
+  ): Promise<
+    Result<EntityID, AuthenticationAlreadyExistsError | AuthenticationError>
+  > {
+    const authenticationResult = await Authentication.create({
       bookerId: command.bookerId,
       email: command.email,
       password: await this.passwordManager.hashPassword(command.password),
+      accessToken: None,
+      refreshToken: None,
     });
+
+    if (authenticationResult.isErr()) {
+      return Err<AuthenticationError>(
+        new AuthenticationError(authenticationResult.unwrapErr().message),
+      );
+    }
+
+    const authentication = authenticationResult.unwrap();
 
     try {
       await this.authenticationRepository.save(authentication);

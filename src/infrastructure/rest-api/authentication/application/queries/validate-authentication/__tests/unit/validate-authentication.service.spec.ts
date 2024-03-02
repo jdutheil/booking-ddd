@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AUTHENTICATION_REPOSITORY } from '@src/infrastructure/rest-api/authentication/application/ports/authentication.repository.port';
 import { PASSWORD_MANAGER } from '@src/infrastructure/rest-api/authentication/application/ports/password-manager.port';
-import { AuthenticationEntity } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
+import { Authentication } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
 import {
   AuthenticationError,
   AuthenticationInvalidEmailError,
@@ -68,7 +68,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
 
   it('should return AuthenticationInvalidPasswordError if password is wrong', async () => {
     await repository.save(
-      await AuthenticationEntity.create({
+      await Authentication.create({
         email: 'test@gmail.com',
         password: await passwordManager.hashPassword('password'),
         bookerId: randomUUID(),
@@ -90,7 +90,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
 
   it('should return Authentication ID', async () => {
     await repository.save(
-      await AuthenticationEntity.create({
+      await Authentication.create({
         email: 'test@gmail.com',
         password: await passwordManager.hashPassword('password'),
         bookerId: randomUUID(),

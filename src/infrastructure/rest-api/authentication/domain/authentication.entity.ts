@@ -1,56 +1,77 @@
-import { Entity, EntityID } from '@src/libs/ddd';
-import { randomUUID } from 'crypto';
-import { None, Option, Some } from 'oxide.ts';
-import {
-  AuthenticationProps,
-  CreateAuthenticationProps,
-} from './authentication.types';
+import { Guard } from '@src/libs/core/guard';
+import { AggregateRoot, EntityID } from '@src/libs/ddd';
+import { Err, None, Ok, Option, Result, Some } from 'oxide.ts';
+import { AuthenticationError } from './authentication.errors';
+import { AuthenticationCreatedEvent } from './events/authentication-created.event';
 
-export class AuthenticationEntity extends Entity<AuthenticationProps> {
-  protected readonly _id!: EntityID;
+export type AuthenticationEmail = string;
+export type Password = string;
+export type AccessToken = string;
+export type RefreshToken = string;
 
-  static async create(
-    create: CreateAuthenticationProps,
-  ): Promise<AuthenticationEntity> {
-    const id = randomUUID();
-    const props: AuthenticationProps = {
-      bookerId: create.bookerId,
-      email: create.email,
-      password: create.password,
-      accessToken: None,
-      refreshToken: None,
-    };
-    const authentication = new AuthenticationEntity({ id, props });
-    return authentication;
-  }
+export interface AuthenticationProps {
+  bookerId: EntityID;
+  email: AuthenticationEmail;
+  password: Password;
+  accessToken: Option<AccessToken>;
+  refreshToken: Option<RefreshToken>;
+}
 
-  validate() {}
-
+export class Authentication extends AggregateRoot<AuthenticationProps> {
   get bookerId(): EntityID {
-    return this._props.bookerId;
+    return this.props.bookerId;
   }
 
-  get email(): string {
-    return this._props.email;
+  get email(): AuthenticationEmail {
+    return this.props.email;
   }
 
-  get password(): string {
-    return this._props.password;
+  get password(): Password {
+    return this.props.password;
   }
 
-  get accessToken(): Option<string> {
-    return this._props.accessToken;
+  get accessToken(): Option<AccessToken> {
+    return this.props.accessToken;
   }
 
-  get refreshToken(): Option<string> {
-    return this._props.refreshToken;
+  get refreshToken(): Option<RefreshToken> {
+    return this.props.refreshToken;
   }
 
-  set refreshToken(refreshToken: string) {
-    this._props.refreshToken = Some(refreshToken);
+  public updateRefreshToken(refreshToken: RefreshToken): void {
+    this.props.refreshToken = Some(refreshToken);
   }
 
-  clearRefreshToken(): void {
-    this._props.refreshToken = None;
+  public clearRefreshToken(): void {
+    this.props.refreshToken = None;
+  }
+
+  private constructor(props: AuthenticationProps, id?: EntityID) {
+    super(props, id);
+  }
+
+  static create(
+    props: AuthenticationProps,
+    id?: EntityID,
+  ): Result<Authentication, AuthenticationError> {
+    const guardResult = Guard.againstNullOrUndefinedBulk([
+      { argument: props.bookerId, argumentName: 'bookerId' },
+      { argument: props.email, argumentName: 'email' },
+      { argument: props.password, argumentName: 'password' },
+    ]);
+    if (guardResult.isErr()) {
+      return Err(new AuthenticationError(guardResult.unwrapErr()));
+    }
+
+    const isNew = !id;
+    const authentication = new Authentication(props, id);
+
+    if (isNew) {
+      authentication.addDomainEvent(
+        new AuthenticationCreatedEvent(authentication),
+      );
+    }
+
+    return Ok(authentication);
   }
 }
