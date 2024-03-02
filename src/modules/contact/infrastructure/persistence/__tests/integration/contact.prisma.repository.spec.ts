@@ -6,7 +6,7 @@ import { Contact } from '@src/modules/contact/domain/contact.entity';
 import { ContactEmail } from '@src/modules/contact/domain/value-objects/contact-email';
 import { ContactName } from '@src/modules/contact/domain/value-objects/contact-name';
 import { randomUUID } from 'crypto';
-import { Some } from 'oxide.ts';
+import { Option, Some } from 'oxide.ts';
 import { ContactPrismaRepository } from '../../contact.prisma.repository';
 import { ContactMapper } from './../../../../domain/contact.mapper';
 
@@ -201,14 +201,14 @@ describe('ContactPrismaRepository Integration Test', () => {
       const bookerId = existingBookerId;
       const contactResult = Contact.create({
         bookerId: existingBookerId,
-        name: Some(
+        name: Option.from(
           ContactName.create({
-            firstName: Some('John'),
-            lastName: Some('Doe'),
+            firstName: Option.from('John'),
+            lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
-        phone: Some('123456789'),
+        email: Option.from(ContactEmail.create(email).unwrap()),
+        phone: Option.from('123456789'),
       });
       const contact = contactResult.unwrap();
       await contactPrismaRepository.save(contact);
@@ -227,6 +227,36 @@ describe('ContactPrismaRepository Integration Test', () => {
       // Act
       const result = await contactPrismaRepository.emailExistsForBooker(
         'john.doe@mail.com',
+        existingBookerId,
+      );
+
+      // Assert
+      expect(result).toBe(false);
+    });
+
+    it('should return false if email exists for another booker', async () => {
+      // Arrange
+      const otherBooker = await prismaService.booker.create({
+        data: { id: randomUUID(), email: 'booker@mail.com' },
+      });
+      const email = 'test-email@mail.com';
+      const contactResult = Contact.create({
+        bookerId: otherBooker.id,
+        name: Option.from(
+          ContactName.create({
+            firstName: Option.from('John'),
+            lastName: Option.from('Doe'),
+          }).unwrap(),
+        ),
+        email: Option.from(ContactEmail.create(email).unwrap()),
+        phone: Option.from('123456789'),
+      });
+      const contact = contactResult.unwrap();
+      await contactPrismaRepository.save(contact);
+
+      // Act
+      const result = await contactPrismaRepository.emailExistsForBooker(
+        email,
         existingBookerId,
       );
 
@@ -277,7 +307,35 @@ describe('ContactPrismaRepository Integration Test', () => {
       // Assert
       expect(result.isNone()).toBe(true);
     });
+
+    it('should return None if email exists for another booker', async () => {
+      // Arrange
+      const otherBooker = await prismaService.booker.create({
+        data: { id: randomUUID(), email: 'other.booker@mail.com' },
+      });
+      const email = 'test-email@mail.com';
+      const contactResult = Contact.create({
+        bookerId: otherBooker.id,
+        name: Option.from(
+          ContactName.create({
+            firstName: Option.from('John'),
+            lastName: Option.from('Doe'),
+          }).unwrap(),
+        ),
+        email: Option.from(ContactEmail.create(email).unwrap()),
+        phone: Option.from('123456789'),
+      });
+      const contact = contactResult.unwrap();
+      await contactPrismaRepository.save(contact);
+
+      // Act
+      const result = await contactPrismaRepository.findOneByEmailForBooker(
+        email,
+        existingBookerId,
+      );
+
+      // Assert
+      expect(result.isNone()).toBe(true);
+    });
   });
 });
-
-// it('should return false if email exists for another booker', async () =>
