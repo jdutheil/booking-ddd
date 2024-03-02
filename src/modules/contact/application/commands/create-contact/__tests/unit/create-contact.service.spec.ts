@@ -1,21 +1,37 @@
+import {
+  EventEmitter2,
+  EventEmitterModule,
+  OnEvent,
+} from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Contact } from '@src/modules/contact/domain/contact.entity';
 import { ContactEmailAlreadyExistsError } from '@src/modules/contact/domain/contact.errors';
+import { ContactCreatedEvent } from '@src/modules/contact/domain/events/contact-created.event';
 import { ContactEmail } from '@src/modules/contact/domain/value-objects/contact-email';
 import { ContactName } from '@src/modules/contact/domain/value-objects/contact-name';
 import { ContactInMemoryRepository } from '@src/modules/contact/infrastructure/persistence/contact.in-memory.repository';
 import { CONTACT_REPOSITORY } from '@src/modules/contact/infrastructure/persistence/contact.repository';
 import { randomUUID } from 'crypto';
-import { Some } from 'oxide.ts';
+import { Option } from 'oxide.ts';
 import { CreateContactCommand } from '../../create-contact.command';
 import { CreateContactService } from '../../create-contact.service';
+
+class EventHandlerMock {
+  @OnEvent(ContactCreatedEvent.name)
+  handleEvent() {}
+}
 
 describe('Create Contact Service', () => {
   let service: CreateContactService;
   let repository: ContactInMemoryRepository;
 
+  let eventEmitter: EventEmitter2;
+  let eventHandler: EventHandlerMock;
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [EventEmitterModule.forRoot()],
+
       providers: [
         CreateContactService,
 
@@ -23,11 +39,17 @@ describe('Create Contact Service', () => {
           provide: CONTACT_REPOSITORY,
           useClass: ContactInMemoryRepository,
         },
+
+        EventHandlerMock,
       ],
     }).compile();
+    await module.init();
 
     service = module.get<CreateContactService>(CreateContactService);
     repository = module.get<ContactInMemoryRepository>(CONTACT_REPOSITORY);
+
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
+    eventHandler = module.get<EventHandlerMock>(EventHandlerMock);
   });
 
   describe('execute', () => {
@@ -41,28 +63,28 @@ describe('Create Contact Service', () => {
       // Arrange
       const existingContactResult = await Contact.create({
         bookerId: randomUUID(),
-        name: Some(
+        name: Option.from(
           ContactName.create({
-            firstName: Some('John'),
-            lastName: Some('Doe'),
+            firstName: Option.from('John'),
+            lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create(existingEmail).unwrap()),
-        phone: Some('111'),
+        email: Option.from(ContactEmail.create(existingEmail).unwrap()),
+        phone: Option.from('111'),
       });
       const existingContact = existingContactResult.unwrap();
       await repository.save(existingContact);
 
       const command = new CreateContactCommand({
         bookerId: existingContact.bookerId,
-        name: Some(
+        name: Option.from(
           ContactName.create({
-            firstName: Some('Jane'),
-            lastName: Some('Dine'),
+            firstName: Option.from('Jane'),
+            lastName: Option.from('Dine'),
           }).unwrap(),
         ),
         email: existingContact.email,
-        phone: Some('00'),
+        phone: Option.from('00'),
       });
 
       // Act
@@ -77,16 +99,17 @@ describe('Create Contact Service', () => {
       // Arrange
       const command = new CreateContactCommand({
         bookerId: randomUUID(),
-        name: Some(
+        name: Option.from(
           ContactName.create({
-            firstName: Some('John'),
-            lastName: Some('Doe'),
+            firstName: Option.from('John'),
+            lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
-        phone: Some('1234567890'),
+        email: Option.from(ContactEmail.create('john.doe@mail.com').unwrap()),
+        phone: Option.from('1234567890'),
       });
       const contactsCount = repository.contacts.length;
+      const eventHandlerSpy = jest.spyOn(eventHandler, 'handleEvent');
 
       // Act
       const result = await service.execute(command);
@@ -98,7 +121,10 @@ describe('Create Contact Service', () => {
       expect(contactId).toBeDefined();
       expect(contactId).not.toBeNull();
 
-      // Test event !!
+      // Test event
+      expect(eventEmitter.hasListeners(ContactCreatedEvent.name)).toBe(true);
+      expect(eventHandlerSpy).toHaveBeenCalledTimes(1);
+      eventHandlerSpy.mockRestore();
     });
   });
 });

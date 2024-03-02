@@ -1,5 +1,6 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EntityID } from '@src/libs/ddd';
 import { Contact } from '@src/modules/contact/domain/contact.entity';
 import {
@@ -15,9 +16,12 @@ import { CreateContactCommand } from './create-contact.command';
 
 @CommandHandler(CreateContactCommand)
 export class CreateContactService implements ICommandHandler {
+  private logger: Logger = new Logger(CreateContactService.name);
+
   constructor(
     @Inject(CONTACT_REPOSITORY)
     private contactRepository: ContactRepository,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute(
@@ -48,6 +52,8 @@ export class CreateContactService implements ICommandHandler {
 
     const contact = contactResult.unwrap();
     await this.contactRepository.save(contact);
+
+    await contact.publishDomainEvents(this.logger, this.eventEmitter);
 
     return Ok(contact.id);
   }
