@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
+import { BookerEmail } from '@src/modules/booker/domain/value-objects/booker-email';
 import { BookerInMemoryRepository } from '@src/modules/booker/infrastructure/persistence/booker.in-memory-repository';
 import { BOOKER_REPOSITORY } from '@src/modules/booker/infrastructure/persistence/booker.repository.port';
 import { RegisterBookerCommand } from '../../register-booker.command';
@@ -31,7 +32,9 @@ describe('Register Booker Service', () => {
 
   it('should register a new booker', async () => {
     const bookerCounts = repository.bookers.length;
-    const command = new RegisterBookerCommand({ email: 'test@mail.com' });
+    const command = new RegisterBookerCommand({
+      email: BookerEmail.create('test@mail.com').unwrap(),
+    });
 
     const result = await service.execute(command);
     expect(result.isOk()).toBe(true);
@@ -40,7 +43,9 @@ describe('Register Booker Service', () => {
   });
 
   it('should return an error if the email is already in used', async () => {
-    const command = new RegisterBookerCommand({ email: 'test@gmail.com' });
+    const command = new RegisterBookerCommand({
+      email: BookerEmail.create('test@mail.com').unwrap(),
+    });
     await service.execute(command);
 
     const result = await service.execute(command);

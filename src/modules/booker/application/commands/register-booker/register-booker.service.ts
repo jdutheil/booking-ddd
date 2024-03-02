@@ -2,7 +2,10 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { EntityID } from '@src/libs/ddd';
 import { Booker } from '@src/modules/booker/domain/booker.entity';
-import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
+import {
+  BookerAlreadyExistsError,
+  BookerError,
+} from '@src/modules/booker/domain/booker.errors';
 import {
   BOOKER_REPOSITORY,
   BookerRepositoryPort,
@@ -19,8 +22,13 @@ export class RegisterBookerService implements ICommandHandler {
 
   async execute(
     command: RegisterBookerCommand,
-  ): Promise<Result<EntityID, BookerAlreadyExistsError>> {
-    const booker = await Booker.create({ email: command.email });
+  ): Promise<Result<EntityID, BookerAlreadyExistsError | BookerError>> {
+    const bookerResult = Booker.create({ email: command.email });
+    if (bookerResult.isErr()) {
+      return Err(new BookerError(bookerResult.unwrapErr().message));
+    }
+
+    const booker = bookerResult.unwrap();
 
     try {
       await this.bookerRepository.register(booker);

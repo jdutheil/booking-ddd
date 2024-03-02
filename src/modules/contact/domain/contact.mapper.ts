@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd';
 import { None, Some } from 'oxide.ts';
-import { ContactModel } from '../infrastructure/persistence/contact.model';
+import {
+  ContactModel,
+  contactSchema,
+} from '../infrastructure/persistence/contact.model';
 import { Contact } from './contact.entity';
 import { ContactError } from './contact.errors';
 import { ContactEmail } from './value-objects/contact-email';
@@ -41,7 +44,7 @@ export class ContactMapper implements Mapper<Contact, ContactModel> {
   }
 
   toPersistence(entity: Contact): ContactModel {
-    return {
+    const record: ContactModel = {
       id: entity.id,
       bookerId: entity.bookerId,
       firstName: entity.name.isSome()
@@ -57,5 +60,7 @@ export class ContactMapper implements Mapper<Contact, ContactModel> {
       email: entity.email.isSome() ? entity.email.unwrap().value : null,
       phone: entity.phone.isSome() ? entity.phone.unwrap() : null,
     };
+
+    return contactSchema.parse(record);
   }
 }
