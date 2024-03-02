@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaModule } from '@src/infrastructure/prisma/prisma.module';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
-import { BookerEntity } from '@src/modules/booker/domain/booker.entity';
+import { Booker } from '@src/modules/booker/domain/booker.entity';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
 import { BookerMapper } from '@src/modules/booker/domain/booker.mapper';
 import { BookerPrismaRepository } from './../../booker.prisma-repository';
@@ -38,7 +38,7 @@ describe('BookerPrismaRepository Integration Test', () => {
     });
 
     it('should register a new booker', async () => {
-      const booker = await BookerEntity.create({ email: 'booker@mail.com' });
+      const booker = await Booker.create({ email: 'booker@mail.com' });
 
       const bookersCount = await prismaService.booker.count();
       await bookerPrismaRepository.register(booker);
@@ -54,7 +54,7 @@ describe('BookerPrismaRepository Integration Test', () => {
     });
 
     it('should throw BookerAlreadyExists if email is already in used', async () => {
-      const booker = await BookerEntity.create({
+      const booker = await Booker.create({
         email: 'booker@mail.com',
       });
 

@@ -4,12 +4,12 @@ import {
   BookerModel,
   bookerSchema,
 } from '../infrastructure/persistence/booker.model';
-import { BookerEntity } from './booker.entity';
+import { Booker } from './booker.entity';
 
 @Injectable()
-export class BookerMapper implements Mapper<BookerEntity, BookerModel> {
-  toDomain(record: BookerModel): BookerEntity {
-    return new BookerEntity({
+export class BookerMapper implements Mapper<Booker, BookerModel> {
+  toDomain(record: BookerModel): Booker {
+    return new Booker({
       id: record.id,
       createdAt: new Date(record.createdAt),
       updatedAt: new Date(record.updatedAt),
@@ -19,7 +19,7 @@ export class BookerMapper implements Mapper<BookerEntity, BookerModel> {
     });
   }
 
-  toPersistence(entity: BookerEntity): BookerModel {
+  toPersistence(entity: Booker): BookerModel {
     const record: BookerModel = {
       id: entity.id,
       email: entity.email,
