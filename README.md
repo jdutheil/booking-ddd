@@ -24,6 +24,7 @@ This repository contains the backend stuff ; frontend repository is there : http
   - [Infrastructure layer](#infrastructure-layer)
   - [Presentation layer](#presentation-layer)
 - [Concepts](#concepts)
+- [Links](#links)
 - [Local development](#local-development)
 - [Installation](#installation)
 - [Running the app](#running-the-app)
