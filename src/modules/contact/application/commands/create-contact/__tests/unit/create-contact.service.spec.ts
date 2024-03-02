@@ -7,8 +7,8 @@ import { ContactInMemoryRepository } from '@src/modules/contact/infrastructure/p
 import { CONTACT_REPOSITORY } from '@src/modules/contact/infrastructure/persistence/contact.repository';
 import { randomUUID } from 'crypto';
 import { Some } from 'oxide.ts';
-import { CreateContactCommand } from '../create-contact.command';
-import { CreateContactService } from '../create-contact.service';
+import { CreateContactCommand } from '../../create-contact.command';
+import { CreateContactService } from '../../create-contact.service';
 
 describe('Create Contact Service', () => {
   let service: CreateContactService;
