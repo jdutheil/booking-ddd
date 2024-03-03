@@ -4,7 +4,7 @@ import { EntityID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
@@ -21,7 +21,7 @@ import { ValidateAuthenticationQuery } from './validate-authentication.query';
 export class ValidateAuthenticationService {
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private readonly authenticationRepository: AuthenticationRepositoryPort,
+    private readonly authenticationRepository: AuthenticationRepository,
     @Inject(PASSWORD_MANAGER)
     private readonly passwordManager: PasswordManagerPort,
   ) {}

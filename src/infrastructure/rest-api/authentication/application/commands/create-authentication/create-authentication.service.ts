@@ -5,7 +5,7 @@ import { EntityID } from '@src/libs/ddd';
 import { Err, None, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
@@ -24,7 +24,7 @@ export class CreateAuthenticationService implements ICommandHandler {
 
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private authenticationRepository: AuthenticationRepositoryPort,
+    private authenticationRepository: AuthenticationRepository,
     @Inject(PASSWORD_MANAGER)
     private passwordManager: PasswordManagerPort,
     private eventEmitter: EventEmitter2,

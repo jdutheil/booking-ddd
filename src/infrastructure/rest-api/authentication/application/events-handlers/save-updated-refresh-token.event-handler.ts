@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
@@ -15,7 +15,7 @@ import { RefreshTokenUpdatedEvent } from '../../domain/events/refresh-token-upda
 export class SaveUpdatedRefreshTokenEventHandler {
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private readonly authenticationRepository: AuthenticationRepositoryPort,
+    private readonly authenticationRepository: AuthenticationRepository,
     @Inject(PASSWORD_MANAGER)
     private readonly passwordManager: PasswordManagerPort,
   ) {}

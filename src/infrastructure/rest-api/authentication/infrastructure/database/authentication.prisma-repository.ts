@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { None, Option, Some } from 'oxide.ts';
-import { AuthenticationRepositoryPort } from '../../application/ports/authentication.repository.port';
+import { AuthenticationRepository } from '../../application/ports/authentication.repository.port';
 import { Authentication } from '../../domain/authentication.entity';
 import { AuthenticationAlreadyExistsError } from '../../domain/authentication.errors';
 import { AuthenticationMapper } from '../../domain/authentication.mapper';
 
 @Injectable()
 export class AuthenticationPrismaRepository
-  implements AuthenticationRepositoryPort
+  implements AuthenticationRepository
 {
   constructor(
     private readonly prisma: PrismaService,

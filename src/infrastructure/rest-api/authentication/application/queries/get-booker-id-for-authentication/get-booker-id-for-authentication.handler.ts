@@ -4,7 +4,7 @@ import { EntityID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../ports/authentication.repository.port';
 import { GetBookerIdForAuthenticationQuery } from './get-booker-id-for-authentication.query';
 
@@ -14,7 +14,7 @@ export class GetBookerIdForAuthenticationQueryHandler
 {
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private authenticationRepository: AuthenticationRepositoryPort,
+    private authenticationRepository: AuthenticationRepository,
   ) {}
 
   async execute(

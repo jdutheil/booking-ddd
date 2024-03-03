@@ -3,7 +3,7 @@ import { QueryHandler } from '@nestjs/cqrs';
 import { Option } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
@@ -16,7 +16,7 @@ import { ValidateRefreshTokenQuery } from './valiate-refresh-token.query';
 export class ValidateRefreshTokenQueryHandler {
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private authenticationRepository: AuthenticationRepositoryPort,
+    private authenticationRepository: AuthenticationRepository,
     @Inject(PASSWORD_MANAGER)
     private passwordManager: PasswordManagerPort,
   ) {}

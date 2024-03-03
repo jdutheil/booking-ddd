@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { None, Option, Some } from 'oxide.ts';
-import { AuthenticationRepositoryPort } from '../../application/ports/authentication.repository.port';
+import { AuthenticationRepository } from '../../application/ports/authentication.repository.port';
 import { Authentication } from '../../domain/authentication.entity';
 import {
   AuthenticationAlreadyExistsError,
@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class AuthenticationInMemoryRepository
-  implements AuthenticationRepositoryPort
+  implements AuthenticationRepository
 {
   authentications: Authentication[] = [];
 
