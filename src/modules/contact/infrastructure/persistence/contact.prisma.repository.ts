@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { EntityID } from '@src/libs/ddd';
@@ -10,6 +10,7 @@ import { ContactRepository } from './contact.repository';
 
 @Injectable()
 export class ContactPrismaRepository implements ContactRepository {
+  private logger: Logger = new Logger(ContactPrismaRepository.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly mapper: ContactMapper,
@@ -35,6 +36,7 @@ export class ContactPrismaRepository implements ContactRepository {
         throw new ContactError('Contact already exists');
       }
 
+      this.logger.error('Unkown error saving contact', error);
       throw new ContactError('Error saving contact', error);
     }
   }

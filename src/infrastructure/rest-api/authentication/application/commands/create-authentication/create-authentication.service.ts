@@ -1,5 +1,6 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EntityID } from '@src/libs/ddd';
 import { Err, None, Ok, Result } from 'oxide.ts';
 import {
@@ -19,11 +20,14 @@ import { CreateAuthenticationCommand } from './create-authentication.command';
 
 @CommandHandler(CreateAuthenticationCommand)
 export class CreateAuthenticationService implements ICommandHandler {
+  private logger: Logger = new Logger(CreateAuthenticationService.name);
+
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private readonly authenticationRepository: AuthenticationRepositoryPort,
+    private authenticationRepository: AuthenticationRepositoryPort,
     @Inject(PASSWORD_MANAGER)
-    private readonly passwordManager: PasswordManagerPort,
+    private passwordManager: PasswordManagerPort,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute(
@@ -56,6 +60,8 @@ export class CreateAuthenticationService implements ICommandHandler {
 
       throw error;
     }
+
+    authentication.publishDomainEvents(this.logger, this.eventEmitter);
 
     return Ok(authentication.id);
   }

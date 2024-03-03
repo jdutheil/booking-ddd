@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BookerModule } from '@src/modules/booker/booker.module';
 import { RestApiModule } from './infrastructure/rest-api/rest-api.module';
+import { ContactModule } from './modules/contact/contact.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RestApiModule } from './infrastructure/rest-api/rest-api.module';
     RestApiModule,
 
     BookerModule,
+    ContactModule,
   ],
   controllers: [],
   providers: [],

@@ -5,13 +5,16 @@ import {
   Controller,
   HttpStatus,
   InternalServerErrorException,
+  Logger,
   Post,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
+import { GetBookerIdForAuthenticationQuery } from '@src/infrastructure/rest-api/authentication/application/queries/get-booker-id-for-authentication/get-booker-id-for-authentication.query';
 import { JwtAuthenticationGuard } from '@src/infrastructure/rest-api/authentication/infrastructure/security/jwt-authentication.guard';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
 import { EntityID } from '@src/libs/ddd';
@@ -24,7 +27,12 @@ import { CreateContactRequest } from './create-contact.request';
 
 @Controller(routesV1.version)
 export class CreateContactHttpController {
-  constructor(private readonly commandBus: CommandBus) {}
+  private logger: Logger = new Logger(CreateContactHttpController.name);
+
+  constructor(
+    private commandBus: CommandBus,
+    private queryBus: QueryBus,
+  ) {}
 
   @ApiOperation({ summary: 'Create a contact', tags: ['contact'] })
   @ApiResponse({
@@ -46,10 +54,22 @@ export class CreateContactHttpController {
     @Request() req: any,
     @Body() createContactRequest: CreateContactRequest,
   ): Promise<IdResponse> {
-    const bookerId = req.user.id;
-    if (!bookerId) {
-      throw new InternalServerErrorException('Booker ID not found');
+    const authenticationId = req.user.id;
+    if (!authenticationId) {
+      throw new UnauthorizedException('Authentication ID not found');
     }
+
+    const bookerIdResult = await this.queryBus.execute(
+      new GetBookerIdForAuthenticationQuery(authenticationId),
+    );
+    if (bookerIdResult.isErr()) {
+      throw new UnauthorizedException(bookerIdResult.unwrapErr().message);
+    }
+    const bookerId = bookerIdResult.unwrap();
+
+    this.logger.debug(
+      `CreateContactHttpController::createContact - Booker ID: ${bookerId}`,
+    );
 
     const { firstName, lastName, email, phone } = createContactRequest;
 
