@@ -5,6 +5,7 @@ import { Authentication } from '@src/infrastructure/rest-api/authentication/doma
 import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
 import { randomUUID } from 'crypto';
+import { None } from 'oxide.ts';
 import { ValidateRefreshTokenQueryHandler } from '../../validate-refresh-token.query.handler';
 
 describe('ValidateRefreshTokenQueryHandler', () => {
@@ -43,11 +44,17 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   beforeEach(async () => {
     repository.authentications = [];
 
-    authenticationEntity = await Authentication.create({
+    const authenticationResult = await Authentication.create({
       email: 'test@mail.com',
-      password: 'password',
+      password: await passwordManager.hashPassword('password'),
       bookerId: randomUUID(),
+      accessToken: None,
+      refreshToken: None,
     });
+    if (authenticationResult.isErr()) {
+      throw new Error('Error creating authentication');
+    }
+    authenticationEntity = authenticationResult.unwrap();
     await repository.save(authenticationEntity);
   });
 
@@ -64,7 +71,7 @@ describe('ValidateRefreshTokenQueryHandler', () => {
     const plainRefreshToken = 'random-token';
     const hashedRefreshToken =
       await passwordManager.hashPassword(plainRefreshToken);
-    authenticationEntity.refreshToken = hashedRefreshToken;
+    authenticationEntity.updateRefreshToken(hashedRefreshToken);
 
     await repository.update(authenticationEntity);
 
@@ -89,7 +96,7 @@ describe('ValidateRefreshTokenQueryHandler', () => {
     const plainRefreshToken = 'random-token';
     const hashedRefreshToken =
       await passwordManager.hashPassword(plainRefreshToken);
-    authenticationEntity.refreshToken = hashedRefreshToken;
+    authenticationEntity.updateRefreshToken(hashedRefreshToken);
 
     await repository.update(authenticationEntity);
 

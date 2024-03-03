@@ -11,7 +11,7 @@ import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authenticati
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
 import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
-import { Result } from 'oxide.ts';
+import { None, Result } from 'oxide.ts';
 import { ValidateAuthenticationQuery } from '../../validate-authentication.query';
 import { ValidateAuthenticationService } from '../../validate-authentication.service';
 
@@ -72,7 +72,9 @@ describe('ValidateAuthenticationService Unit Tests', () => {
         email: 'test@gmail.com',
         password: await passwordManager.hashPassword('password'),
         bookerId: randomUUID(),
-      }),
+        accessToken: None,
+        refreshToken: None,
+      }).unwrap(),
     );
 
     const authenticationQuery = new ValidateAuthenticationQuery({
@@ -94,7 +96,9 @@ describe('ValidateAuthenticationService Unit Tests', () => {
         email: 'test@gmail.com',
         password: await passwordManager.hashPassword('password'),
         bookerId: randomUUID(),
-      }),
+        accessToken: None,
+        refreshToken: None,
+      }).unwrap(),
     );
 
     const authenticationQuery = new ValidateAuthenticationQuery({
