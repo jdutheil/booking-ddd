@@ -5,6 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { JwtAuthenticationGuard } from './authentication/infrastructure/security/jwt-authentication.guard';
 import { RegisterBookerHttpController } from './booker/application/register-booker/register-booker.http.controller';
+import { CreateContactHttpController } from './contact/application/create-contact/create-contact.http.controller';
 
 @Module({
   imports: [CqrsModule, EventEmitterModule.forRoot(), AuthenticationModule],
@@ -14,6 +15,6 @@ import { RegisterBookerHttpController } from './booker/application/register-book
       useClass: JwtAuthenticationGuard,
     },
   ],
-  controllers: [RegisterBookerHttpController],
+  controllers: [RegisterBookerHttpController, CreateContactHttpController],
 })
 export class RestApiModule {}

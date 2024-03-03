@@ -1,85 +1,33 @@
-export type AggregateID = string;
+import { randomUUID } from 'crypto';
 
-export interface BaseEntityProps {
-  id: AggregateID;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface CreateEntityProps<T> {
-  id: AggregateID;
-  props: T;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+export type EntityID = string;
 
 export abstract class Entity<EntityProps> {
-  protected abstract _id: AggregateID;
-  protected readonly _props: EntityProps;
+  protected readonly _id: EntityID;
+  public readonly props: EntityProps;
 
-  private readonly _createdAt: Date;
-  private _updatedAt: Date;
-
-  constructor({
-    id,
-    createdAt,
-    updatedAt,
-    props,
-  }: CreateEntityProps<EntityProps>) {
-    this.setId(id);
-    this._props = props;
-
-    const now = new Date();
-    this._createdAt = createdAt || now;
-    this._updatedAt = updatedAt || now;
+  constructor(props: EntityProps, id?: EntityID) {
+    this._id = id ?? randomUUID();
+    this.props = props;
   }
 
-  get id(): AggregateID {
+  get id(): EntityID {
     return this._id;
   }
 
-  private setId(id: AggregateID): void {
-    this._id = id;
-  }
-
-  get createdAt(): Date {
-    return this._createdAt;
-  }
-
-  get updatedAt(): Date {
-    return this._updatedAt;
-  }
-
-  static isEntity(entity: unknown): entity is Entity<unknown> {
-    return entity instanceof Entity;
-  }
-
-  public equals(object?: Entity<EntityProps>): boolean {
-    if (object == null || object == undefined) {
+  public equals(entity?: Entity<EntityProps>): boolean {
+    if (entity === null || entity === undefined) {
       return false;
     }
 
-    if (this === object) {
+    if (this === entity) {
       return true;
     }
 
-    if (!Entity.isEntity(object)) {
+    if (!(entity instanceof Entity)) {
       return false;
     }
 
-    return this.id ? this.id === object.id : false;
+    return this._id === entity._id;
   }
-
-  public getProps(): EntityProps & BaseEntityProps {
-    const propsCopy = {
-      id: this._id,
-      createdAt: this._createdAt,
-      updatedAt: this._updatedAt,
-      ...this._props,
-    };
-
-    return Object.freeze(propsCopy);
-  }
-
-  public abstract validate(): void;
 }

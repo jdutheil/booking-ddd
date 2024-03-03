@@ -1,30 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd/mapper.interface';
+import { ContactError } from '@src/modules/contact/domain/contact.errors';
 import {
   BookerModel,
   bookerSchema,
 } from '../infrastructure/persistence/booker.model';
-import { BookerEntity } from './booker.entity';
+import { Booker } from './booker.entity';
+import { BookerEmail } from './value-objects/booker-email';
 
 @Injectable()
-export class BookerMapper implements Mapper<BookerEntity, BookerModel> {
-  toDomain(record: BookerModel): BookerEntity {
-    return new BookerEntity({
-      id: record.id,
-      createdAt: new Date(record.createdAt),
-      updatedAt: new Date(record.updatedAt),
-      props: {
-        email: record.email,
+export class BookerMapper implements Mapper<Booker, BookerModel> {
+  toDomain(record: BookerModel): Booker {
+    const result = Booker.create(
+      {
+        email: BookerEmail.create(record.email).unwrap(),
       },
-    });
+      record.id,
+    );
+
+    if (result.isErr()) {
+      throw new ContactError(
+        'An error occured during Contact mapping',
+        result.unwrapErr(),
+      );
+    }
+
+    return result.unwrap();
   }
 
-  toPersistence(entity: BookerEntity): BookerModel {
+  toPersistence(entity: Booker): BookerModel {
     const record: BookerModel = {
       id: entity.id,
-      email: entity.email,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      email: entity.email.value,
     };
 
     return bookerSchema.parse(record);

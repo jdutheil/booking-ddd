@@ -4,7 +4,7 @@ This application helps music artist agencies (alias Booker) to manage their cont
 
 It is also a try to apply some of the best software engineering concepts, mainly **DDD** (Domain Driven Design) and **Hexagonal Architecture**. As a senior developer, I am still learning on those patterns, feel free to comment and use Issues / Discussions to talk about it.
 
-This repository contains the backend stuff ; frontend repository is there : https://github.com/jddw-dev/booking-front
+This repository contains the backend stuff ; frontend repository is there : https://github.com/jdutheil/booking-front
 
 ## Table of contents
 
@@ -24,6 +24,7 @@ This repository contains the backend stuff ; frontend repository is there : http
   - [Infrastructure layer](#infrastructure-layer)
   - [Presentation layer](#presentation-layer)
 - [Concepts](#concepts)
+- [Links](#links)
 - [Local development](#local-development)
 - [Installation](#installation)
 - [Running the app](#running-the-app)
@@ -72,6 +73,13 @@ Work in progress
 ## Concepts
 
 Work in progress
+
+## Links
+
+This repository arised thanks to the wonderful work of other people, mainly :
+
+- Khalil Stemmler, all his articles are gold mine ; I took a lot of inspiration with its project "ddd-forum", here is the link to the repository : https://github.com/stemmlerjs/ddd-forum
+- Sairyss and his big implementation of DDD Hexagonal Architecture in NestJs : https://github.com/Sairyss/domain-driven-hexagon
 
 ## Local development
 

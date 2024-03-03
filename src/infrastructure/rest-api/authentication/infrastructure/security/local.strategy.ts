@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { PassportStrategy } from '@nestjs/passport';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { Result } from 'oxide.ts';
 import { Strategy } from 'passport-local';
 import { ValidateAuthenticationQuery } from '../../application/queries/validate-authentication/validate-authentication.query';
@@ -14,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
-    const authentication: Result<AggregateID, AuthenticationError> =
+    const authentication: Result<EntityID, AuthenticationError> =
       await this.queryBus.execute(
         new ValidateAuthenticationQuery({ email, password }),
       );

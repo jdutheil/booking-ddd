@@ -1,22 +1,39 @@
-import { AggregateID, Entity } from '@libs/ddd';
-import { randomUUID } from 'crypto';
-import { BookerProps, CreateBookerProps } from './booker.types';
+import { AggregateRoot, EntityID } from '@libs/ddd';
+import { Guard } from '@src/libs/core/guard';
+import { Err, Ok, Result } from 'oxide.ts';
+import { BookerError } from './booker.errors';
+import { BookerRegisteredEvent } from './events/booker-registered.event';
+import { BookerEmail } from './value-objects/booker-email';
 
-export class BookerEntity extends Entity<BookerProps> {
-  protected readonly _id!: AggregateID;
+export interface BookerProps {
+  email: BookerEmail;
+}
 
-  static async create(create: CreateBookerProps): Promise<BookerEntity> {
-    const id = randomUUID();
-    const props: BookerProps = {
-      email: create.email,
-    };
-    const booker = new BookerEntity({ id, props });
-    return booker;
+export class Booker extends AggregateRoot<BookerProps> {
+  get email(): BookerEmail {
+    return this.props.email;
   }
 
-  validate(): void {}
+  private constructor(props: BookerProps, id?: EntityID) {
+    super(props, id);
+  }
 
-  get email(): string {
-    return this._props.email;
+  static create(
+    props: BookerProps,
+    id?: EntityID,
+  ): Result<Booker, BookerError> {
+    const guardResult = Guard.againstNullOrUndefined(props.email, 'email');
+    if (guardResult.isErr()) {
+      return Err(new BookerError(guardResult.unwrapErr()));
+    }
+
+    const isNew = !id;
+    const booker = new Booker(props, id);
+
+    if (isNew) {
+      booker.addDomainEvent(new BookerRegisteredEvent(booker));
+    }
+
+    return Ok(booker);
   }
 }

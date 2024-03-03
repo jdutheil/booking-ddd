@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AUTHENTICATION_REPOSITORY } from '@src/infrastructure/rest-api/authentication/application/ports/authentication.repository.port';
 import { PASSWORD_MANAGER } from '@src/infrastructure/rest-api/authentication/application/ports/password-manager.port';
-import { AuthenticationEntity } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
+import { Authentication } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
 import {
   AuthenticationError,
   AuthenticationInvalidEmailError,
@@ -9,9 +9,9 @@ import {
 } from '@src/infrastructure/rest-api/authentication/domain/authentication.errors';
 import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
-import { Result } from 'oxide.ts';
+import { None, Result } from 'oxide.ts';
 import { ValidateAuthenticationQuery } from '../../validate-authentication.query';
 import { ValidateAuthenticationService } from '../../validate-authentication.service';
 
@@ -60,7 +60,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
       password: 'password',
     });
 
-    const result: Result<AggregateID, AuthenticationError> =
+    const result: Result<EntityID, AuthenticationError> =
       await service.execute(authenticationQuery);
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr()).toBeInstanceOf(AuthenticationInvalidEmailError);
@@ -68,11 +68,13 @@ describe('ValidateAuthenticationService Unit Tests', () => {
 
   it('should return AuthenticationInvalidPasswordError if password is wrong', async () => {
     await repository.save(
-      await AuthenticationEntity.create({
+      await Authentication.create({
         email: 'test@gmail.com',
         password: await passwordManager.hashPassword('password'),
         bookerId: randomUUID(),
-      }),
+        accessToken: None,
+        refreshToken: None,
+      }).unwrap(),
     );
 
     const authenticationQuery = new ValidateAuthenticationQuery({
@@ -80,7 +82,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
       password: 'wrongPassword',
     });
 
-    const result: Result<AggregateID, AuthenticationError> =
+    const result: Result<EntityID, AuthenticationError> =
       await service.execute(authenticationQuery);
     expect(result.isErr()).toBe(true);
     expect(result.unwrapErr()).toBeInstanceOf(
@@ -90,11 +92,13 @@ describe('ValidateAuthenticationService Unit Tests', () => {
 
   it('should return Authentication ID', async () => {
     await repository.save(
-      await AuthenticationEntity.create({
+      await Authentication.create({
         email: 'test@gmail.com',
         password: await passwordManager.hashPassword('password'),
         bookerId: randomUUID(),
-      }),
+        accessToken: None,
+        refreshToken: None,
+      }).unwrap(),
     );
 
     const authenticationQuery = new ValidateAuthenticationQuery({
@@ -102,7 +106,7 @@ describe('ValidateAuthenticationService Unit Tests', () => {
       password: 'password',
     });
 
-    const result: Result<AggregateID, AuthenticationError> =
+    const result: Result<EntityID, AuthenticationError> =
       await service.execute(authenticationQuery);
     expect(result.isOk()).toBe(true);
     expect(result.unwrap()).not.toBeNull();

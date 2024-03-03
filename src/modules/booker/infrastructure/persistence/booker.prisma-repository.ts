@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
-import { BookerEntity } from '../../domain/booker.entity';
+import { Booker } from '../../domain/booker.entity';
 import { BookerAlreadyExistsError } from '../../domain/booker.errors';
 import { BookerMapper } from '../../domain/booker.mapper';
 import { BookerRepositoryPort } from './booker.repository.port';
@@ -13,7 +13,7 @@ export class BookerPrismaRepository implements BookerRepositoryPort {
     private readonly mapper: BookerMapper,
   ) {}
 
-  async register(entity: BookerEntity): Promise<void> {
+  async register(entity: Booker): Promise<void> {
     const record = this.mapper.toPersistence(entity);
     try {
       await this.prisma.booker.create({ data: record });

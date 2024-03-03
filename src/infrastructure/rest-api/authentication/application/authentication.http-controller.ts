@@ -11,7 +11,7 @@ import { QueryBus } from '@nestjs/cqrs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { RefreshTokenUpdatedEvent } from '../domain/events/refresh-token-updated.event';
 import { Public } from '../infrastructure/security/is-public';
 import { JwtRefreshAuthenticationGuard } from '../infrastructure/security/jwt-refresh-authentication.guard';
@@ -68,7 +68,7 @@ export class AuthenticationHttpController {
     return new TokensResponse(tokens);
   }
 
-  private async getTokens(authenticationId: AggregateID): Promise<Tokens> {
+  private async getTokens(authenticationId: EntityID): Promise<Tokens> {
     const tokens: Tokens = await this.queryBus.execute(
       new JwtQuery(authenticationId),
     );

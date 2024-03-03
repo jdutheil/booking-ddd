@@ -10,6 +10,7 @@ import { SaveUpdatedRefreshTokenEventHandler } from './application/events-handle
 import { AUTHENTICATION_REPOSITORY } from './application/ports/authentication.repository.port';
 import { JWT_SERVICE } from './application/ports/jwt-service.port';
 import { PASSWORD_MANAGER } from './application/ports/password-manager.port';
+import { GetBookerIdForAuthenticationQueryHandler } from './application/queries/get-booker-id-for-authentication/get-booker-id-for-authentication.handler';
 import { JwtQueryHandler } from './application/queries/jwt-query/jwt-query.handler';
 import { ValidateAuthenticationService } from './application/queries/validate-authentication/validate-authentication.service';
 import { ValidateRefreshTokenQueryHandler } from './application/queries/validate-refresh-token/validate-refresh-token.query.handler';
@@ -49,6 +50,7 @@ const queryHandlers: Provider[] = [
   ValidateAuthenticationService,
   JwtQueryHandler,
   ValidateRefreshTokenQueryHandler,
+  GetBookerIdForAuthenticationQueryHandler,
 ];
 const eventHandlers: Provider[] = [
   CreateAuthenticationWhenBookerRegisteredEventHandler,

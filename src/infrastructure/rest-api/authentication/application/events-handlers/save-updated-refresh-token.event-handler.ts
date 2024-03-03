@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
@@ -15,9 +14,8 @@ import { RefreshTokenUpdatedEvent } from '../../domain/events/refresh-token-upda
 @Injectable()
 export class SaveUpdatedRefreshTokenEventHandler {
   constructor(
-    private readonly commandBus: CommandBus,
     @Inject(AUTHENTICATION_REPOSITORY)
-    private readonly authenticationRepository: AuthenticationRepositoryPort,
+    private readonly authenticationRepository: AuthenticationRepository,
     @Inject(PASSWORD_MANAGER)
     private readonly passwordManager: PasswordManagerPort,
   ) {}
@@ -36,7 +34,7 @@ export class SaveUpdatedRefreshTokenEventHandler {
     const authenticationEntity = authentication.unwrap();
     const hashedRefreshToken =
       await this.passwordManager.hashPassword(refreshToken);
-    authenticationEntity.refreshToken = hashedRefreshToken;
+    authenticationEntity.updateRefreshToken(hashedRefreshToken);
 
     await this.authenticationRepository.update(authenticationEntity);
   }

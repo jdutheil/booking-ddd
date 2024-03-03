@@ -1,10 +1,10 @@
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { QueryBase } from '@src/libs/ddd/query.base';
 
 export class JwtQuery extends QueryBase {
-  readonly id: AggregateID;
+  readonly id: EntityID;
 
-  constructor(id: AggregateID) {
+  constructor(id: EntityID) {
     super();
     this.id = id;
   }

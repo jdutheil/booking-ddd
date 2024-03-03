@@ -1,36 +1,55 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AggregateID } from '@src/libs/ddd';
-import { Err, Ok, Result } from 'oxide.ts';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EntityID } from '@src/libs/ddd';
+import { Err, None, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
-  AuthenticationRepositoryPort,
+  AuthenticationRepository,
 } from '../../../application/ports/authentication.repository.port';
 import {
   PASSWORD_MANAGER,
   PasswordManagerPort,
 } from '../../../application/ports/password-manager.port';
-import { AuthenticationEntity } from '../../../domain/authentication.entity';
-import { AuthenticationAlreadyExistsError } from '../../../domain/authentication.errors';
+import { Authentication } from '../../../domain/authentication.entity';
+import {
+  AuthenticationAlreadyExistsError,
+  AuthenticationError,
+} from '../../../domain/authentication.errors';
 import { CreateAuthenticationCommand } from './create-authentication.command';
 
 @CommandHandler(CreateAuthenticationCommand)
 export class CreateAuthenticationService implements ICommandHandler {
+  private logger: Logger = new Logger(CreateAuthenticationService.name);
+
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
-    private readonly authenticationRepository: AuthenticationRepositoryPort,
+    private authenticationRepository: AuthenticationRepository,
     @Inject(PASSWORD_MANAGER)
-    private readonly passwordManager: PasswordManagerPort,
+    private passwordManager: PasswordManagerPort,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute(
     command: CreateAuthenticationCommand,
-  ): Promise<Result<AggregateID, AuthenticationAlreadyExistsError>> {
-    const authentication = await AuthenticationEntity.create({
+  ): Promise<
+    Result<EntityID, AuthenticationAlreadyExistsError | AuthenticationError>
+  > {
+    const authenticationResult = await Authentication.create({
       bookerId: command.bookerId,
       email: command.email,
       password: await this.passwordManager.hashPassword(command.password),
+      accessToken: None,
+      refreshToken: None,
     });
+
+    if (authenticationResult.isErr()) {
+      return Err<AuthenticationError>(
+        new AuthenticationError(authenticationResult.unwrapErr().message),
+      );
+    }
+
+    const authentication = authenticationResult.unwrap();
 
     try {
       await this.authenticationRepository.save(authentication);
@@ -41,6 +60,8 @@ export class CreateAuthenticationService implements ICommandHandler {
 
       throw error;
     }
+
+    authentication.publishDomainEvents(this.logger, this.eventEmitter);
 
     return Ok(authentication.id);
   }

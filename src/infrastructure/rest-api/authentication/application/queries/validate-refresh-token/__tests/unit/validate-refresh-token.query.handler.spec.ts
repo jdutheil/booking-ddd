@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AUTHENTICATION_REPOSITORY } from '@src/infrastructure/rest-api/authentication/application/ports/authentication.repository.port';
 import { PASSWORD_MANAGER } from '@src/infrastructure/rest-api/authentication/application/ports/password-manager.port';
-import { AuthenticationEntity } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
+import { Authentication } from '@src/infrastructure/rest-api/authentication/domain/authentication.entity';
 import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
 import { randomUUID } from 'crypto';
+import { None } from 'oxide.ts';
 import { ValidateRefreshTokenQueryHandler } from '../../validate-refresh-token.query.handler';
 
 describe('ValidateRefreshTokenQueryHandler', () => {
@@ -12,7 +13,7 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   let repository: AuthenticationInMemoryRepository;
   let passwordManager: Argon2PasswordManager;
 
-  let authenticationEntity: AuthenticationEntity;
+  let authenticationEntity: Authentication;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,11 +44,17 @@ describe('ValidateRefreshTokenQueryHandler', () => {
   beforeEach(async () => {
     repository.authentications = [];
 
-    authenticationEntity = await AuthenticationEntity.create({
+    const authenticationResult = await Authentication.create({
       email: 'test@mail.com',
-      password: 'password',
+      password: await passwordManager.hashPassword('password'),
       bookerId: randomUUID(),
+      accessToken: None,
+      refreshToken: None,
     });
+    if (authenticationResult.isErr()) {
+      throw new Error('Error creating authentication');
+    }
+    authenticationEntity = authenticationResult.unwrap();
     await repository.save(authenticationEntity);
   });
 
@@ -64,7 +71,7 @@ describe('ValidateRefreshTokenQueryHandler', () => {
     const plainRefreshToken = 'random-token';
     const hashedRefreshToken =
       await passwordManager.hashPassword(plainRefreshToken);
-    authenticationEntity.refreshToken = hashedRefreshToken;
+    authenticationEntity.updateRefreshToken(hashedRefreshToken);
 
     await repository.update(authenticationEntity);
 
@@ -89,7 +96,7 @@ describe('ValidateRefreshTokenQueryHandler', () => {
     const plainRefreshToken = 'random-token';
     const hashedRefreshToken =
       await passwordManager.hashPassword(plainRefreshToken);
-    authenticationEntity.refreshToken = hashedRefreshToken;
+    authenticationEntity.updateRefreshToken(hashedRefreshToken);
 
     await repository.update(authenticationEntity);
 

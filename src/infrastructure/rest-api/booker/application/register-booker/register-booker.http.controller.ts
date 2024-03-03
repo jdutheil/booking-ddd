@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -11,12 +12,13 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
-import { AggregateID } from '@src/libs/ddd';
+import { EntityID } from '@src/libs/ddd';
 import { RegisterBookerCommand } from '@src/modules/booker/application/commands/register-booker/register-booker.command';
 import { BookerAlreadyExistsError } from '@src/modules/booker/domain/booker.errors';
-import { BookerRegisteredEvent } from '@src/modules/booker/domain/events/booker-registered.event';
+import { BookerEmail } from '@src/modules/booker/domain/value-objects/booker-email';
 import { Result } from 'oxide.ts';
 import { Public } from '../../../authentication/infrastructure/security/is-public';
+import { BookerRegisteredFromSignUpEvent } from '../../domain/events/booker-registered-from-sign-up.event';
 import { RegisterBookerRequest } from './register-booker.request';
 
 @Controller(routesV1.version)
@@ -45,8 +47,18 @@ export class RegisterBookerHttpController {
   async createBooker(
     @Body() registerBookerRequest: RegisterBookerRequest,
   ): Promise<IdResponse> {
-    const command = new RegisterBookerCommand(registerBookerRequest);
-    const result: Result<AggregateID, BookerAlreadyExistsError> =
+    const { email, password } = registerBookerRequest;
+
+    const emailResult = BookerEmail.create(email);
+    if (emailResult.isErr()) {
+      throw new BadRequestException(emailResult.unwrapErr().message);
+    }
+    const bookerEmail = emailResult.unwrap();
+
+    const command = new RegisterBookerCommand({
+      email: bookerEmail,
+    });
+    const result: Result<EntityID, BookerAlreadyExistsError> =
       await this.commandBus.execute(command);
 
     if (result.isErr()) {
@@ -58,10 +70,10 @@ export class RegisterBookerHttpController {
     }
 
     const bookerId = result.unwrap();
-    this.eventEmitter.emit(BookerRegisteredEvent.eventName, {
+    this.eventEmitter.emit(BookerRegisteredFromSignUpEvent.name, {
       id: bookerId,
-      email: registerBookerRequest.email,
-      password: registerBookerRequest.password,
+      email: email,
+      password: password,
     });
 
     return new IdResponse(bookerId);
