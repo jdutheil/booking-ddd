@@ -85,7 +85,10 @@ export class AuthenticationHttpController {
   }
 
   @Get('test-auth')
-  async test(): Promise<string> {
+  async test(@Request() req: any): Promise<string> {
+    const userId = req.auth.userId;
+    console.log('userId', userId);
+
     return 'You are authenticated';
   }
 }

@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { JwtAuthenticationGuard } from './authentication/infrastructure/security/jwt-authentication.guard';
+import { ClerkGuard } from './authentication/infrastructure/security/clerk.guard';
 import { RegisterBookerHttpController } from './booker/application/register-booker/register-booker.http.controller';
 import { CreateContactHttpController } from './contact/application/create-contact/create-contact.http.controller';
 
@@ -12,7 +12,7 @@ import { CreateContactHttpController } from './contact/application/create-contac
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthenticationGuard,
+      useClass: ClerkGuard,
     },
   ],
   controllers: [RegisterBookerHttpController, CreateContactHttpController],
