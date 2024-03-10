@@ -147,6 +147,17 @@ describe('ContactPrismaRepository Integration Test', () => {
       // Assert
       expect(result).toBe(true);
     });
+
+    it('should return false if contact does not exists', async () => {
+      // Arrange
+      const contactId = randomUUID();
+
+      // Act
+      const result = await contactPrismaRepository.idExists(contactId);
+
+      // Assert
+      expect(result).toBe(false);
+    });
   });
 
   describe('findOneById', () => {

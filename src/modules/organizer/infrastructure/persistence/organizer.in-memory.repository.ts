@@ -35,4 +35,9 @@ export class OrganizerInMemoryRepository implements OrganizerRepository {
 
     return Some(organizer);
   }
+
+  async idExists(id: string): Promise<boolean> {
+    const organizer = await this.findOneById(id);
+    return organizer.isSome();
+  }
 }

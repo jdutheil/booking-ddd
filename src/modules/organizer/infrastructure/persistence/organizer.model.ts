@@ -1,3 +1,4 @@
+import { contactSchema } from '@src/modules/contact/infrastructure/persistence/contact.model';
 import { z } from 'zod';
 
 export const organizerSchema = z.object({
@@ -5,8 +6,8 @@ export const organizerSchema = z.object({
   bookerId: z.string().uuid(),
   createdAt: z.preprocess((val: any) => new Date(val), z.date()).optional(),
   updatedAt: z.preprocess((val: any) => new Date(val), z.date()).optional(),
-  name: z.string().uuid(),
-  contactIds: z.array(z.string().uuid()),
+  name: z.string(),
+  contacts: z.array(contactSchema).optional(),
 });
 
 export type OrganizerModel = z.infer<typeof organizerSchema>;
