@@ -17,11 +17,7 @@ model Authentication {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  email String @unique
-  password String
-  
-  accessToken String?
-  refreshToken String?
+  userId String @unique
 
   booker Booker @relation(fields: [bookerId], references: [id])
   bookerId String @unique

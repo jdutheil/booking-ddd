@@ -47,9 +47,9 @@ export class AuthenticationPrismaRepository
     return authentication ? Some(this.mapper.toDomain(authentication)) : None;
   }
 
-  async findOneByEmail(email: string): Promise<Option<Authentication>> {
+  async findOneByUserId(userId: string): Promise<Option<Authentication>> {
     const authentication = await this.prisma.authentication.findUnique({
-      where: { email },
+      where: { userId },
     });
     return authentication ? Some(this.mapper.toDomain(authentication)) : None;
   }

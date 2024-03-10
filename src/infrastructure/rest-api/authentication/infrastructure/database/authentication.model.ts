@@ -2,10 +2,7 @@ import { z } from 'zod';
 
 export const authenticationSchema = z.object({
   id: z.string().uuid(),
-  email: z.string().email(),
-  password: z.string(),
-  accessToken: z.string().nullable(),
-  refreshToken: z.string().nullable(),
+  userId: z.string(),
   bookerId: z.string().uuid(),
 });
 

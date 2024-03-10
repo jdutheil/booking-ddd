@@ -5,13 +5,11 @@ import {
 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthenticationAlreadyExistsError } from '@src/infrastructure/rest-api/authentication/domain/authentication.errors';
-import { Argon2PasswordManager } from '@src/infrastructure/rest-api/authentication/infrastructure/argon2-password-manager';
 import { AuthenticationInMemoryRepository } from '@src/infrastructure/rest-api/authentication/infrastructure/database/authentication.in-memory.repository';
 import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { Result } from 'oxide.ts';
 import { AUTHENTICATION_REPOSITORY } from '../../../../ports/authentication.repository.port';
-import { PASSWORD_MANAGER } from '../../../../ports/password-manager.port';
 import { CreateAuthenticationCommand } from '../../create-authentication.command';
 import { CreateAuthenticationService } from '../../create-authentication.service';
 import { AuthenticationCreatedEvent } from './../../../../../domain/events/authentication-created.event';
@@ -38,11 +36,6 @@ describe('CreateAuthenticationService Unit Tests', () => {
           useClass: AuthenticationInMemoryRepository,
         },
 
-        {
-          provide: PASSWORD_MANAGER,
-          useClass: Argon2PasswordManager,
-        },
-
         CreateAuthenticationService,
         EventHandlerMock,
       ],
@@ -67,9 +60,8 @@ describe('CreateAuthenticationService Unit Tests', () => {
     // Arrange
     const authCount = repository.authentications.length;
     const authDatas = new CreateAuthenticationCommand({
-      email: 'test@mail.com',
-      password: '$strongPassw0rd;',
       bookerId: randomUUID(),
+      userId: randomUUID(),
     });
     const eventHandlerSpy = jest.spyOn(eventHandler, 'handleEvent');
 
@@ -87,23 +79,5 @@ describe('CreateAuthenticationService Unit Tests', () => {
     );
     expect(eventHandlerSpy).toHaveBeenCalledTimes(1);
     eventHandlerSpy.mockRestore();
-  });
-
-  it('should hash the password when creating Authentication', async () => {
-    const password = '$strongPassw0rd';
-    const authDatas = new CreateAuthenticationCommand({
-      email: 'test@mail.com',
-      password,
-      bookerId: randomUUID(),
-    });
-
-    const result: Result<EntityID, AuthenticationAlreadyExistsError> =
-      await service.execute(authDatas);
-    const id = result.unwrap();
-
-    const authentication = repository.authentications.find(
-      (auth) => auth.id === id,
-    );
-    expect(authentication!.password).not.toBe(password);
   });
 });

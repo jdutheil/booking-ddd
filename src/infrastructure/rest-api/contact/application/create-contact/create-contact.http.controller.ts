@@ -9,13 +9,11 @@ import {
   Post,
   Request,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
 import { GetBookerIdForAuthenticationQuery } from '@src/infrastructure/rest-api/authentication/application/queries/get-booker-id-for-authentication/get-booker-id-for-authentication.query';
-import { JwtAuthenticationGuard } from '@src/infrastructure/rest-api/authentication/infrastructure/security/jwt-authentication.guard';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
 import { EntityID } from '@src/libs/ddd';
 import { CreateContactCommand } from '@src/modules/contact/application/commands/create-contact/create-contact.command';
@@ -48,12 +46,12 @@ export class CreateContactHttpController {
     status: HttpStatus.BAD_REQUEST,
     type: ApiErrorResponse,
   })
-  @UseGuards(JwtAuthenticationGuard)
   @Post(routesV1.contact.root)
   async createContact(
     @Request() req: any,
     @Body() createContactRequest: CreateContactRequest,
   ): Promise<IdResponse> {
+    // TODO : change for Clerk
     const authenticationId = req.user.id;
     if (!authenticationId) {
       throw new UnauthorizedException('Authentication ID not found');
