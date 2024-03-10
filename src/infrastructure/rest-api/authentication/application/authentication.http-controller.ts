@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiTags } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
 import { EntityID } from '@src/libs/ddd';
@@ -33,7 +32,6 @@ export class AuthenticationHttpController {
   constructor(
     private configService: ConfigService,
     private commandBus: CommandBus,
-    private eventEmitter: EventEmitter2,
   ) {}
 
   @Public()
