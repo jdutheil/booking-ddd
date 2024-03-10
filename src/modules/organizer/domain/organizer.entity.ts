@@ -22,6 +22,10 @@ export class Organizer extends AggregateRoot<OrganizerProps> {
     return this.props.name;
   }
 
+  public changeName(name: OrganizerName): void {
+    this.props.name = name;
+  }
+
   get contactIds(): ContactIds {
     return this.props.contactIds;
   }
