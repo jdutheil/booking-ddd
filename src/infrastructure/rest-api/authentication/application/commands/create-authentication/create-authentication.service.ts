@@ -2,15 +2,11 @@ import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EntityID } from '@src/libs/ddd';
-import { Err, None, Ok, Result } from 'oxide.ts';
+import { Err, Ok, Result } from 'oxide.ts';
 import {
   AUTHENTICATION_REPOSITORY,
   AuthenticationRepository,
 } from '../../../application/ports/authentication.repository.port';
-import {
-  PASSWORD_MANAGER,
-  PasswordManagerPort,
-} from '../../../application/ports/password-manager.port';
 import { Authentication } from '../../../domain/authentication.entity';
 import {
   AuthenticationAlreadyExistsError,
@@ -25,8 +21,6 @@ export class CreateAuthenticationService implements ICommandHandler {
   constructor(
     @Inject(AUTHENTICATION_REPOSITORY)
     private authenticationRepository: AuthenticationRepository,
-    @Inject(PASSWORD_MANAGER)
-    private passwordManager: PasswordManagerPort,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -37,10 +31,7 @@ export class CreateAuthenticationService implements ICommandHandler {
   > {
     const authenticationResult = await Authentication.create({
       bookerId: command.bookerId,
-      email: command.email,
-      password: await this.passwordManager.hashPassword(command.password),
-      accessToken: None,
-      refreshToken: None,
+      userId: command.userId,
     });
 
     if (authenticationResult.isErr()) {

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd/mapper.interface';
-import { None, Some } from 'oxide.ts';
 
 import {
   AuthenticationModel,
@@ -17,10 +16,7 @@ export class AuthenticationMapper
     const result = Authentication.create(
       {
         bookerId: record.bookerId,
-        email: record.email,
-        password: record.password,
-        accessToken: record.accessToken ? Some(record.accessToken) : None,
-        refreshToken: record.refreshToken ? Some(record.refreshToken) : None,
+        userId: record.userId,
       },
       record.id,
     );
@@ -38,14 +34,7 @@ export class AuthenticationMapper
   toPersistence(entity: Authentication): AuthenticationModel {
     const record: AuthenticationModel = {
       id: entity.id,
-      email: entity.email,
-      password: entity.password,
-      accessToken: entity.accessToken.isSome()
-        ? entity.accessToken.unwrap()
-        : null,
-      refreshToken: entity.refreshToken.isSome()
-        ? entity.refreshToken.unwrap()
-        : null,
+      userId: entity.userId,
       bookerId: entity.bookerId,
     };
 

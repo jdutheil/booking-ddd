@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Logger,
   Post,
   RawBodyRequest,
   Req,
@@ -18,16 +19,17 @@ import { Public } from '../infrastructure/security/is-public';
 @Controller(`${routesV1.version}/${routesV1.auth.root}`)
 @ApiTags('Authentication')
 export class AuthenticationHttpController {
+  private logger: Logger = new Logger(AuthenticationHttpController.name);
+
   constructor(private configService: ConfigService) {}
 
   @Public()
   @Post('user-created-webhook')
   async userCreatedWebhook(@Req() req: RawBodyRequest<Request>): Promise<void> {
-    console.log('User created webhook');
+    this.logger.log('Received event on user-created-webhook');
 
     const webhookSecret = this.configService.get('USER_CREATED_WEBHOOK_SECRET');
     if (!webhookSecret) {
-      console.error('!webhookSecret');
       throw new AuthenticationError('Webhook secret not found');
     }
 
@@ -55,16 +57,17 @@ export class AuthenticationHttpController {
         'svix-signature': svix_signature,
       }) as WebhookEvent;
     } catch (err: any) {
-      console.error('Webhook verification failed', err.message);
       throw new BadRequestException(err.message);
     }
 
     const { id } = evt.data;
     const eventType = evt.type;
 
-    console.log(`Webhook with an ID of ${id} and type of ${eventType}`);
-    // Console log the full payload to view
-    console.log('Webhook body:', evt.data);
+    this.logger.log(`Webhook with an ID of ${id} and type of ${eventType}`);
+
+    if (eventType === 'user.created') {
+      const { id } = evt.data;
+    }
   }
 
   @Get('test-auth')

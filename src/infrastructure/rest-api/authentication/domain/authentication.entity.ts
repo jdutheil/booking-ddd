@@ -1,20 +1,14 @@
 import { Guard } from '@src/libs/core/guard';
 import { AggregateRoot, EntityID } from '@src/libs/ddd';
-import { Err, None, Ok, Option, Result, Some } from 'oxide.ts';
+import { Err, Ok, Result } from 'oxide.ts';
 import { AuthenticationError } from './authentication.errors';
 import { AuthenticationCreatedEvent } from './events/authentication-created.event';
 
-export type AuthenticationEmail = string;
-export type Password = string;
-export type AccessToken = string;
-export type RefreshToken = string;
+export type UserId = string;
 
 export interface AuthenticationProps {
   bookerId: EntityID;
-  email: AuthenticationEmail;
-  password: Password;
-  accessToken: Option<AccessToken>;
-  refreshToken: Option<RefreshToken>;
+  userId: UserId;
 }
 
 export class Authentication extends AggregateRoot<AuthenticationProps> {
@@ -22,28 +16,8 @@ export class Authentication extends AggregateRoot<AuthenticationProps> {
     return this.props.bookerId;
   }
 
-  get email(): AuthenticationEmail {
-    return this.props.email;
-  }
-
-  get password(): Password {
-    return this.props.password;
-  }
-
-  get accessToken(): Option<AccessToken> {
-    return this.props.accessToken;
-  }
-
-  get refreshToken(): Option<RefreshToken> {
-    return this.props.refreshToken;
-  }
-
-  public updateRefreshToken(refreshToken: RefreshToken): void {
-    this.props.refreshToken = Some(refreshToken);
-  }
-
-  public clearRefreshToken(): void {
-    this.props.refreshToken = None;
+  get userId(): UserId {
+    return this.props.userId;
   }
 
   private constructor(props: AuthenticationProps, id?: EntityID) {
@@ -56,8 +30,7 @@ export class Authentication extends AggregateRoot<AuthenticationProps> {
   ): Result<Authentication, AuthenticationError> {
     const guardResult = Guard.againstNullOrUndefinedBulk([
       { argument: props.bookerId, argumentName: 'bookerId' },
-      { argument: props.email, argumentName: 'email' },
-      { argument: props.password, argumentName: 'password' },
+      { argument: props.userId, argumentName: 'userId' },
     ]);
     if (guardResult.isErr()) {
       return Err(new AuthenticationError(guardResult.unwrapErr()));

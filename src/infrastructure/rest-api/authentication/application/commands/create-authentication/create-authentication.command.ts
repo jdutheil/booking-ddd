@@ -1,15 +1,14 @@
-import { Command, CommandProps } from '@src/libs/ddd';
+import { Command, CommandProps, EntityID } from '@src/libs/ddd';
+import { UserId } from '../../../domain/authentication.entity';
 
 export class CreateAuthenticationCommand extends Command {
-  readonly bookerId: string;
-  readonly email: string;
-  readonly password: string;
+  readonly bookerId: EntityID;
+  readonly userId: UserId;
 
   constructor(props: CommandProps<CreateAuthenticationCommand>) {
     super(props);
 
     this.bookerId = props.bookerId;
-    this.email = props.email;
-    this.password = props.password;
+    this.userId = props.userId;
   }
 }

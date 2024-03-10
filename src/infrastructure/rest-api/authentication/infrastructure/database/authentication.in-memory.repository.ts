@@ -17,7 +17,7 @@ export class AuthenticationInMemoryRepository
     const foundEntity = this.authentications.find(
       (authentication) =>
         authentication.id === entity.id ||
-        authentication.email === entity.email,
+        authentication.userId === entity.userId,
     );
     if (foundEntity) {
       throw new AuthenticationAlreadyExistsError();
@@ -48,9 +48,9 @@ export class AuthenticationInMemoryRepository
     return Some(foundEntity);
   }
 
-  async findOneByEmail(email: string): Promise<Option<Authentication>> {
+  async findOneByUserId(userId: string): Promise<Option<Authentication>> {
     const foundEntity = this.authentications.find(
-      (authentication) => authentication.email === email,
+      (authentication) => authentication.userId === userId,
     );
     if (!foundEntity) {
       return None;
