@@ -4,9 +4,11 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EntityID } from '@src/libs/ddd';
 import { Organizer } from '@src/modules/organizer/domain/organizer.entity';
 import { OrganizerError } from '@src/modules/organizer/domain/organizer.errors';
-import { ORGANIZER_REPOSITORY } from '@src/modules/organizer/infrastructure/persistence/organizer.repository';
+import {
+  ORGANIZER_REPOSITORY,
+  OrganizerRepository,
+} from '@src/modules/organizer/infrastructure/persistence/organizer.repository';
 import { Ok, Result } from 'oxide.ts';
-import { OrganizerRepository } from './../../../../../../dist/src/modules/organizer/infrastructure/persistence/organizer.repository.d';
 import { CreateOrganizerCommand } from './create-organizer.command';
 
 @CommandHandler(CreateOrganizerCommand)
