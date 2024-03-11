@@ -19,7 +19,7 @@ model Authentication {
   
   userId String @unique
 
-  booker Booker @relation(fields: [bookerId], references: [id])
+  booker Booker @relation(fields: [bookerId], references: [id], onDelete: Cascade)
   bookerId String @unique
 }
 
@@ -33,10 +33,24 @@ model Booker {
 
   authentication Authentication?
   
+  organizers Organizer[]
   contacts Contact[]
 }
 
 // Contact domain
+
+model Organizer {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+
+  booker Booker @relation(fields: [bookerId], references: [id], onDelete: Cascade)
+  bookerId String
+
+  contacts Contact[]
+}
 
 model Contact {
   id String @id @default(uuid())
@@ -46,8 +60,12 @@ model Contact {
   lastName String?
   email String?
   phone String?
-  booker Booker @relation(fields: [bookerId], references: [id])
+
+  booker Booker @relation(fields: [bookerId], references: [id], onDelete: Cascade)
   bookerId String
+
+  organizer Organizer? @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  organizerId String?
 
   @@unique([bookerId, email])
 }

@@ -30,10 +30,8 @@ export class ClerkGuard implements CanActivate {
     return new Promise((resolve, reject) => {
       ClerkExpressRequireAuth({})(req, res, (err) => {
         if (err) {
-          console.error('ClerkGuard error', err);
           reject(new UnauthorizedException(err.stack));
         } else {
-          console.log('ClerkGuard success');
           resolve(true);
         }
       });

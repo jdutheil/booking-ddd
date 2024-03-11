@@ -6,6 +6,7 @@ import { AuthenticationHttpController } from './application/authentication.http-
 import { CreateAuthenticationService } from './application/commands/create-authentication/create-authentication.service';
 import { AUTHENTICATION_REPOSITORY } from './application/ports/authentication.repository.port';
 import { GetBookerIdForAuthenticationQueryHandler } from './application/queries/get-booker-id-for-authentication/get-booker-id-for-authentication.handler';
+import { GetBookerIdForUserIdQueryHandler } from './application/queries/get-booker-id-for-user-id/get-booker-id-for-user-id.handler';
 import { AuthenticationMapper } from './domain/authentication.mapper';
 import { AuthenticationPrismaRepository } from './infrastructure/database/authentication.prisma-repository';
 
@@ -21,7 +22,10 @@ const orms: Provider[] = [
 ];
 
 const commandHandlers: Provider[] = [CreateAuthenticationService];
-const queryHandlers: Provider[] = [GetBookerIdForAuthenticationQueryHandler];
+const queryHandlers: Provider[] = [
+  GetBookerIdForAuthenticationQueryHandler,
+  GetBookerIdForUserIdQueryHandler,
+];
 
 const mappers: Provider[] = [AuthenticationMapper];
 
