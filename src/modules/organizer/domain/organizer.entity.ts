@@ -50,6 +50,11 @@ export class Organizer extends AggregateRoot<OrganizerProps> {
     if (this.nameIsEmpty(props.name)) {
       return Err(new OrganizerError('Name cannot be empty'));
     }
+    if (this.nameIsTooLong(props.name)) {
+      return Err(
+        new OrganizerError('Name cannot be longer than 255 characters'),
+      );
+    }
 
     const isNew = !id;
     const organizer = new Organizer(props, id);
@@ -63,5 +68,9 @@ export class Organizer extends AggregateRoot<OrganizerProps> {
 
   private static nameIsEmpty(name: OrganizerName): boolean {
     return name.trim() === '';
+  }
+
+  private static nameIsTooLong(name: OrganizerName): boolean {
+    return name.length > 255;
   }
 }

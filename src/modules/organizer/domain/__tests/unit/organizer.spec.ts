@@ -58,4 +58,19 @@ describe('Organizer Entity', () => {
     // Assert
     expect(result.isErr()).toBe(true);
   });
+
+  it('should throw if name is too long', async () => {
+    // Arrange
+    const props: OrganizerProps = {
+      bookerId: randomUUID(),
+      name: 'a'.repeat(256),
+      contactIds: [],
+    };
+
+    // Act
+    const result = Organizer.create(props);
+
+    // Assert
+    expect(result.isErr()).toBe(true);
+  });
 });
