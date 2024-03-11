@@ -5,6 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ClerkGuard } from './authentication/infrastructure/security/clerk.guard';
 import { CreateContactHttpController } from './contact/application/create-contact/create-contact.http.controller';
+import { CreateOrganizerHttpController } from './organizer/application/create-organizer/create-organizer.http.controller';
 
 @Module({
   imports: [CqrsModule, EventEmitterModule.forRoot(), AuthenticationModule],
@@ -14,6 +15,6 @@ import { CreateContactHttpController } from './contact/application/create-contac
       useClass: ClerkGuard,
     },
   ],
-  controllers: [CreateContactHttpController],
+  controllers: [CreateContactHttpController, CreateOrganizerHttpController],
 })
 export class RestApiModule {}

@@ -2,6 +2,7 @@
 const authRoot = 'auth';
 const bookersRoot = 'bookers';
 const contactsRoot = 'contacts';
+const organizersRoot = 'organizers';
 
 // Api versions
 const v1 = 'v1';
@@ -17,5 +18,8 @@ export const routesV1 = {
   },
   contact: {
     root: contactsRoot,
+  },
+  organizer: {
+    root: organizersRoot,
   },
 };

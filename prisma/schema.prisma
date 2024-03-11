@@ -19,7 +19,7 @@ model Authentication {
   
   userId String @unique
 
-  booker Booker @relation(fields: [bookerId], references: [id])
+  booker Booker @relation(fields: [bookerId], references: [id], onDelete: Cascade)
   bookerId String @unique
 }
 
