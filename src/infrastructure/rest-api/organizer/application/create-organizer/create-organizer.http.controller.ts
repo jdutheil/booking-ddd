@@ -4,14 +4,13 @@ import {
   Controller,
   HttpStatus,
   Logger,
-  NotFoundException,
   Post,
-  Req,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
-import { GetBookerIdForUserIdQuery } from '@src/infrastructure/rest-api/authentication/application/queries/get-booker-id-for-user-id/get-booker-id-for-user-id.query';
+import { Auth } from '@src/infrastructure/rest-api/authentication/infrastructure/security/auth.decorator';
+import { BookerIdFromUserIdPipe } from '@src/infrastructure/rest-api/authentication/infrastructure/security/booker-id-from-user-id.pipe';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
 import { EntityID } from '@src/libs/ddd';
 import { CreateOrganizerCommand } from '@src/modules/organizer/application/commands/create-organizer/create-organizer.command';
@@ -40,19 +39,8 @@ export class CreateOrganizerHttpController {
   @Post(routesV1.organizer.root)
   async createOrganizer(
     @Body() createOrganizerRequest: CreateOrganizerRequest,
-    @Req() req: any,
+    @Auth(BookerIdFromUserIdPipe) bookerId: EntityID,
   ): Promise<IdResponse> {
-    const userId = req.auth.userId;
-
-    const bookerIdResult: Result<EntityID, Error> = await this.queryBus.execute(
-      new GetBookerIdForUserIdQuery(userId),
-    );
-    if (bookerIdResult.isErr()) {
-      console.error('userId:', userId);
-      throw new NotFoundException('Booker not found');
-    }
-    const bookerId = bookerIdResult.unwrap();
-
     this.logger.debug(
       `CreateOrganizerHttpController::createOrganizer - Booker ID: ${bookerId}`,
     );

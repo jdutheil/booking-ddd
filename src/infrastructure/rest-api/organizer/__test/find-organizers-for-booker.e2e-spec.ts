@@ -6,12 +6,13 @@ import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { mainConfig } from '@src/main.config';
 import * as request from 'supertest';
 
-describe('Create Organizer', () => {
+describe('Find Organizers for Booker', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let configService: ConfigService;
 
   let authenticationToken: string;
+  let existingBookerId: string;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,6 +29,7 @@ describe('Create Organizer', () => {
     const clerkToken = configService.get<string>('CLERK_TEST_TOKEN');
     const clerkUser = configService.get<string>('CLERK_TEST_USER');
 
+    // TODO : DRY !!
     // Save Clerk Token
     if (!clerkToken) {
       throw new Error('CLERK_TEST_TOKEN not found');
@@ -40,6 +42,7 @@ describe('Create Organizer', () => {
         email: 'test-booker@mail.com',
       },
     });
+    existingBookerId = booker.id;
 
     if (!clerkUser) {
       throw new Error('CLERK_TEST_USER not found');
@@ -70,21 +73,46 @@ describe('Create Organizer', () => {
     await app.close();
   });
 
-  describe('POST /organizers', () => {
-    it('should create a new organizer', async () => {
-      const payload = {
-        name: 'Organizer name',
-      };
-      const organizersCount = await prisma.organizer.count();
+  describe('GET /organizers', () => {
+    afterEach(async () => {
+      await prisma.organizer.deleteMany();
+    });
 
+    it('should find organizers for booker', async () => {
+      // Arrange
+      const organizers = await prisma.organizer.createMany({
+        data: [
+          {
+            name: 'Organizer 1',
+            bookerId: existingBookerId,
+          },
+          {
+            name: 'Organizer 2',
+            bookerId: existingBookerId,
+          },
+        ],
+      });
+
+      const otherBooker = await prisma.booker.create({
+        data: {
+          email: 'other-booker@mail.com',
+        },
+      });
+      const otherOrganizer = await prisma.organizer.create({
+        data: {
+          name: 'Other organizer',
+          bookerId: otherBooker.id,
+        },
+      });
+
+      // Act
       const { status, body } = await request(app.getHttpServer())
-        .post('/v1/organizers')
-        .set('Authorization', `Bearer ${authenticationToken}`)
-        .send(payload);
+        .get('/v1/organizers')
+        .set('Authorization', `Bearer ${authenticationToken}`);
 
-      expect(status).toEqual(HttpStatus.CREATED);
-      expect(body.id).not.toBeNull();
-      expect(await prisma.organizer.count()).toEqual(organizersCount + 1);
+      expect(status).toBe(HttpStatus.OK);
+      expect(body.data).not.toBeNull();
+      expect(body.data.length).toBe(2);
     });
   });
 });

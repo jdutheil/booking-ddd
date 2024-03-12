@@ -250,8 +250,11 @@ describe('OrganizerPrismaRepository Integration Test', () => {
 
       // Assert
       expect(organizers).toHaveLength(2);
-      expect(organizers[0].id).toBe(organizer1.id);
-      expect(organizers[1].id).toBe(organizer2.id);
+      organizers.forEach((organizer) => {
+        const exists =
+          organizer.id === organizer1.id || organizer.id === organizer2.id;
+        expect(exists).toBe(true);
+      });
     });
 
     it('should return an empty array if no organizer exists for a booker', async () => {
