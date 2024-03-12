@@ -63,4 +63,34 @@ describe('Find Organizers for Booker', () => {
     expect(result.isOk()).toBe(true);
     expect(result.unwrap().length).toEqual(organizers.length);
   });
+
+  it('should not return organizers from another booker', async () => {
+    // Arrange
+    const bookerId = randomUUID();
+    const organizers: Organizer[] = [
+      Organizer.create({
+        bookerId,
+        name: 'Organizer 1',
+        contactIds: [],
+      }).unwrap(),
+      Organizer.create({
+        bookerId,
+        name: 'Organizer 2',
+        contactIds: [],
+      }).unwrap(),
+      Organizer.create({
+        bookerId: randomUUID(),
+        name: 'Other organizer',
+        contactIds: [],
+      }).unwrap(),
+    ];
+    organizersRepository.organizers = organizers;
+
+    // Act
+    const result = await queryHandler.execute({ bookerId });
+
+    // Assert
+    expect(result.isOk()).toBe(true);
+    expect(result.unwrap().length).toEqual(organizers.length - 1);
+  });
 });
