@@ -6,6 +6,8 @@ import {
 import { Reflector } from '@nestjs/core';
 
 export function mainConfig(app: INestApplication) {
+  app.enableCors();
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

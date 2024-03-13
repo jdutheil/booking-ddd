@@ -9,12 +9,12 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
+import { CreateOrganizerCommand } from '@src/domains/contacts/organizer/application/commands/create-organizer/create-organizer.command';
+import { OrganizerError } from '@src/domains/contacts/organizer/domain/organizer.errors';
 import { Auth } from '@src/infrastructure/rest-api/authentication/infrastructure/security/auth.decorator';
 import { BookerIdFromUserIdPipe } from '@src/infrastructure/rest-api/authentication/infrastructure/security/booker-id-from-user-id.pipe';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
 import { EntityID } from '@src/libs/ddd';
-import { CreateOrganizerCommand } from '@src/modules/organizer/application/commands/create-organizer/create-organizer.command';
-import { OrganizerError } from '@src/modules/organizer/domain/organizer.errors';
 import { Result } from 'oxide.ts';
 import { CreateOrganizerRequest } from './create-organizer.request';
 

@@ -13,13 +13,13 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
+import { CreateContactCommand } from '@src/domains/contacts/contact/application/commands/create-contact/create-contact.command';
+import { ContactEmailAlreadyExistsError } from '@src/domains/contacts/contact/domain/contact.errors';
+import { ContactEmail } from '@src/domains/contacts/contact/domain/value-objects/contact-email';
+import { ContactName } from '@src/domains/contacts/contact/domain/value-objects/contact-name';
 import { GetBookerIdForAuthenticationQuery } from '@src/infrastructure/rest-api/authentication/application/queries/get-booker-id-for-authentication/get-booker-id-for-authentication.query';
 import { ApiErrorResponse, IdResponse } from '@src/libs/api';
 import { EntityID } from '@src/libs/ddd';
-import { CreateContactCommand } from '@src/modules/contact/application/commands/create-contact/create-contact.command';
-import { ContactEmailAlreadyExistsError } from '@src/modules/contact/domain/contact.errors';
-import { ContactEmail } from '@src/modules/contact/domain/value-objects/contact-email';
-import { ContactName } from '@src/modules/contact/domain/value-objects/contact-name';
 import { None, Option, Result, Some } from 'oxide.ts';
 import { CreateContactRequest } from './create-contact.request';
 
