@@ -1,11 +1,19 @@
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { randomUUID } from 'crypto';
 import { OrganizerCreatedEvent } from '../../events/organizer-created.event';
-import { Organizer, OrganizerProps } from '../../organizer.entity';
+import {
+  Organizer,
+  OrganizerProps,
+  OrganizerType,
+} from '../../organizer.entity';
 
 describe('Organizer Entity', () => {
   const organizerProps: OrganizerProps = {
     bookerId: randomUUID(),
     name: 'John Doe',
+    type: OrganizerType.OTHER,
+    emails: [Email.create('john.doe@mail.com').unwrap()],
+    phones: ['+33612345678'],
     contactIds: [],
   };
 
@@ -49,6 +57,9 @@ describe('Organizer Entity', () => {
     const props: OrganizerProps = {
       bookerId: randomUUID(),
       name: '',
+      type: OrganizerType.OTHER,
+      emails: [],
+      phones: [],
       contactIds: [],
     };
 
@@ -64,6 +75,9 @@ describe('Organizer Entity', () => {
     const props: OrganizerProps = {
       bookerId: randomUUID(),
       name: 'a'.repeat(256),
+      type: OrganizerType.OTHER,
+      emails: [],
+      phones: [],
       contactIds: [],
     };
 
@@ -72,5 +86,34 @@ describe('Organizer Entity', () => {
 
     // Assert
     expect(result.isErr()).toBe(true);
+  });
+
+  it('should add an email', async () => {
+    // Arrange
+    const organizer = Organizer.create(organizerProps).unwrap();
+    const email = Email.create('john.doe2@mail.com').unwrap();
+
+    // Act
+    organizer.addEmail(email);
+
+    // Assert
+    expect(organizer.props.emails).toHaveLength(2);
+    expect(organizer.props.emails).toContain(email);
+  });
+
+  it('should not add an email if it already exists', async () => {
+    // Arrange
+    const organizer = Organizer.create(organizerProps).unwrap();
+    const email = Email.create('john.doe@mail.com').unwrap();
+    const email2 = Email.create('john.doe2@mail.com').unwrap();
+
+    // Act
+    organizer.addEmail(email);
+    organizer.addEmail(email2);
+
+    // Assert
+    expect(organizer.props.emails).toHaveLength(2);
+    expect(organizer.props.emails).toContain(email);
+    expect(organizer.props.emails).toContain(email2);
   });
 });

@@ -7,10 +7,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Contact } from '@src/domains/contacts/contact/domain/contact.entity';
 import { ContactEmailAlreadyExistsError } from '@src/domains/contacts/contact/domain/contact.errors';
 import { ContactCreatedEvent } from '@src/domains/contacts/contact/domain/events/contact-created.event';
-import { ContactEmail } from '@src/domains/contacts/contact/domain/value-objects/contact-email';
 import { ContactName } from '@src/domains/contacts/contact/domain/value-objects/contact-name';
 import { ContactInMemoryRepository } from '@src/domains/contacts/contact/infrastructure/persistence/contact.in-memory.repository';
 import { CONTACT_REPOSITORY } from '@src/domains/contacts/contact/infrastructure/persistence/contact.repository';
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { randomUUID } from 'crypto';
 import { Option } from 'oxide.ts';
 import { CreateContactCommand } from '../../create-contact.command';
@@ -69,7 +69,7 @@ describe('Create Contact Service', () => {
             lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Option.from(ContactEmail.create(existingEmail).unwrap()),
+        email: Option.from(Email.create(existingEmail).unwrap()),
         phone: Option.from('111'),
       });
       const existingContact = existingContactResult.unwrap();
@@ -105,7 +105,7 @@ describe('Create Contact Service', () => {
             lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Option.from(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Option.from(Email.create('john.doe@mail.com').unwrap()),
         phone: Option.from('1234567890'),
       });
       const contactsCount = repository.contacts.length;

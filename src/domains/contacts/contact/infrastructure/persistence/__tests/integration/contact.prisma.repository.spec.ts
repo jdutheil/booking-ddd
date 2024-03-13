@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Contact } from '@src/domains/contacts/contact/domain/contact.entity';
-import { ContactEmail } from '@src/domains/contacts/contact/domain/value-objects/contact-email';
 import { ContactName } from '@src/domains/contacts/contact/domain/value-objects/contact-name';
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { PrismaModule } from '@src/infrastructure/prisma/prisma.module';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { EntityID } from '@src/libs/ddd';
@@ -54,7 +54,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -85,7 +85,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -135,7 +135,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -175,7 +175,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -218,7 +218,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Option.from(ContactEmail.create(email).unwrap()),
+        email: Option.from(Email.create(email).unwrap()),
         phone: Option.from('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -259,7 +259,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Option.from(ContactEmail.create(email).unwrap()),
+        email: Option.from(Email.create(email).unwrap()),
         phone: Option.from('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -291,7 +291,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       });
       const contact = contactResult.unwrap();
@@ -333,7 +333,7 @@ describe('ContactPrismaRepository Integration Test', () => {
             lastName: Option.from('Doe'),
           }).unwrap(),
         ),
-        email: Option.from(ContactEmail.create(email).unwrap()),
+        email: Option.from(Email.create(email).unwrap()),
         phone: Option.from('123456789'),
       });
       const contact = contactResult.unwrap();

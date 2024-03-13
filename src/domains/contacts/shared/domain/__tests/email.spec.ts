@@ -1,14 +1,14 @@
-import { ContactEmail } from '../../value-objects/contact-email';
+import { Email } from '../value-objects/email';
 
-describe('ContactEmail Value Object', () => {
+describe('Email Value Object', () => {
   it('should return an error if email is not valid', () => {
-    const email = ContactEmail.create('wrong-format');
+    const email = Email.create('wrong-format');
     expect(email.isErr()).toBe(true);
   });
 
   it('should create an email', () => {
     const emailValue = 'john.doe@mail.com';
-    const email = ContactEmail.create(emailValue);
+    const email = Email.create(emailValue);
     expect(email.isOk()).toBe(true);
     expect(email.unwrap().value).toBe(emailValue);
   });
@@ -17,7 +17,7 @@ describe('ContactEmail Value Object', () => {
     const plainEmailValue = 'John.Doe@Mail.com';
     const formattedEmailValue = 'john.doe@mail.com';
 
-    const email = ContactEmail.create(plainEmailValue);
+    const email = Email.create(plainEmailValue);
     expect(email.isOk()).toBe(true);
     expect(email.unwrap().value).toBe(formattedEmailValue);
   });

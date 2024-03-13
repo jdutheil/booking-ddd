@@ -1,13 +1,13 @@
 import { Guard } from '@src/libs/core/guard';
 import { AggregateRoot, EntityID } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
+import { Email } from '../../shared/domain/value-objects/email';
 import { OrganizerCreatedEvent } from './events/organizer-created.event';
 import { OrganizerError } from './organizer.errors';
-import { OrganizerEmail } from './value-objects/organizer-email';
 
 export type OrganizerName = string;
 export type ContactIds = EntityID[];
-export type OrganizerEmails = OrganizerEmail[];
+export type OrganizerEmails = Email[];
 export type OrganizerPhones = string[];
 
 export enum OrganizerType {
@@ -47,8 +47,38 @@ export class Organizer extends AggregateRoot<OrganizerProps> {
     return this.props.emails;
   }
 
+  public addEmail(email: Email): void {
+    this.props.emails.forEach((existingEmail) => {
+      if (existingEmail.equals(email)) {
+        return;
+      }
+    });
+    this.props.emails.push(email);
+  }
+
+  public removeEmail(email: Email): void {
+    this.props.emails = this.props.emails.filter((existingEmail) => {
+      return !existingEmail.equals(email);
+    });
+  }
+
   get phones(): OrganizerPhones {
     return this.props.phones;
+  }
+
+  public addPhone(phone: string): void {
+    this.props.phones.forEach((existingPhone) => {
+      if (existingPhone === phone) {
+        return;
+      }
+    });
+    this.props.phones.push(phone);
+  }
+
+  public removePhone(phone: string): void {
+    this.props.phones = this.props.phones.filter((existingPhone) => {
+      return existingPhone !== phone;
+    });
   }
 
   get contactIds(): ContactIds {

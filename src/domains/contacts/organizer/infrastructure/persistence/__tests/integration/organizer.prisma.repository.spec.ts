@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Organizer } from '@src/domains/contacts/organizer/domain/organizer.entity';
+import {
+  Organizer,
+  OrganizerType,
+} from '@src/domains/contacts/organizer/domain/organizer.entity';
 import { OrganizerMapper } from '@src/domains/contacts/organizer/domain/organizer.mapper';
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { PrismaModule } from '@src/infrastructure/prisma/prisma.module';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { EntityID } from '@src/libs/ddd';
@@ -75,6 +79,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizerResult = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       });
       const organizer = organizerResult.unwrap();
@@ -100,6 +107,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizerResult = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: existingContactIds,
       });
       const organizer = organizerResult.unwrap();
@@ -127,6 +137,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizer = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await organizerPrismaRepository.save(organizer);
@@ -159,6 +172,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizer = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await organizerPrismaRepository.save(organizer);
@@ -189,6 +205,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizer = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await organizerPrismaRepository.save(organizer);
@@ -223,6 +242,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizer1 = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test 1',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await organizerPrismaRepository.save(organizer1);
@@ -230,6 +252,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const organizer2 = Organizer.create({
         bookerId: existingBookerId,
         name: 'Organizer Test 2',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await organizerPrismaRepository.save(organizer2);
@@ -240,6 +265,9 @@ describe('OrganizerPrismaRepository Integration Test', () => {
       const otherOrganizer = Organizer.create({
         bookerId: otherBooker.id,
         name: 'Other Organizer Test',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await organizerPrismaRepository.save(otherOrganizer);

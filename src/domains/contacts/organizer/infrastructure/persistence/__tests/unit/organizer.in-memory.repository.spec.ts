@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Organizer } from '@src/domains/contacts/organizer/domain/organizer.entity';
+import {
+  Organizer,
+  OrganizerType,
+} from '@src/domains/contacts/organizer/domain/organizer.entity';
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { OrganizerInMemoryRepository } from '../../organizer.in-memory.repository';
@@ -27,6 +31,9 @@ describe('OrganizerInMemoryRepository', () => {
       const organizer = Organizer.create({
         bookerId: randomUUID(),
         name: 'John Doe',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
 
@@ -44,6 +51,9 @@ describe('OrganizerInMemoryRepository', () => {
       const organizer = Organizer.create({
         bookerId: randomUUID(),
         name: 'John Doe',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await repository.save(organizer);
@@ -65,6 +75,9 @@ describe('OrganizerInMemoryRepository', () => {
       const organizer = Organizer.create({
         bookerId: randomUUID(),
         name: 'John Doe',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await repository.save(organizer);
@@ -103,6 +116,9 @@ describe('OrganizerInMemoryRepository', () => {
       const organizer = Organizer.create({
         bookerId: randomUUID(),
         name: 'John Doe',
+        type: OrganizerType.OTHER,
+        emails: [Email.create('john.doe@mail.com').unwrap()],
+        phones: ['+33612345678'],
         contactIds: [],
       }).unwrap();
       await repository.save(organizer);

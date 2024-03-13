@@ -1,13 +1,13 @@
 import { ContactPhone } from '@src/domains/contacts/contact/domain/contact.entity';
-import { ContactEmail } from '@src/domains/contacts/contact/domain/value-objects/contact-email';
 import { ContactName } from '@src/domains/contacts/contact/domain/value-objects/contact-name';
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { Command, CommandProps, EntityID } from '@src/libs/ddd';
 import { Option } from 'oxide.ts';
 
 export class CreateContactCommand extends Command {
   bookerId: EntityID;
   name: Option<ContactName>;
-  email: Option<ContactEmail>;
+  email: Option<Email>;
   phone: Option<ContactPhone>;
 
   constructor(props: CommandProps<CreateContactCommand>) {

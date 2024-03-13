@@ -1,9 +1,9 @@
 import { Guard } from '@src/libs/core/guard';
 import { AggregateRoot, EntityID } from '@src/libs/ddd';
 import { Err, Ok, Option, Result } from 'oxide.ts';
+import { Email } from '../../shared/domain/value-objects/email';
 import { ContactError } from './contact.errors';
 import { ContactCreatedEvent } from './events/contact-created.event';
-import { ContactEmail } from './value-objects/contact-email';
 import { ContactName } from './value-objects/contact-name';
 
 export type ContactPhone = string;
@@ -11,7 +11,7 @@ export type ContactPhone = string;
 export interface ContactProps {
   bookerId: EntityID;
   name: Option<ContactName>;
-  email: Option<ContactEmail>;
+  email: Option<Email>;
   phone: Option<ContactPhone>;
 }
 
@@ -24,7 +24,7 @@ export class Contact extends AggregateRoot<ContactProps> {
     return this.props.name;
   }
 
-  get email(): Option<ContactEmail> {
+  get email(): Option<Email> {
     return this.props.email;
   }
 
@@ -70,7 +70,7 @@ export class Contact extends AggregateRoot<ContactProps> {
 
   private static nameAndEmailAreNone(
     name: Option<ContactName>,
-    email: Option<ContactEmail>,
+    email: Option<Email>,
   ): boolean {
     return name.isNone() && email.isNone();
   }
@@ -79,7 +79,7 @@ export class Contact extends AggregateRoot<ContactProps> {
     this.props.name = name;
   }
 
-  public updateEmail(email: Option<ContactEmail>): void {
+  public updateEmail(email: Option<Email>): void {
     this.props.email = email;
   }
 

@@ -1,8 +1,8 @@
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { randomUUID } from 'crypto';
 import { None, Some } from 'oxide.ts';
 import { Contact, ContactProps } from '../../contact.entity';
 import { ContactCreatedEvent } from '../../events/contact-created.event';
-import { ContactEmail } from '../../value-objects/contact-email';
 import { ContactName } from '../../value-objects/contact-name';
 
 describe('Contact Entity', () => {
@@ -14,7 +14,7 @@ describe('Contact Entity', () => {
         lastName: Some('Doe'),
       }).unwrap(),
     ),
-    email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+    email: Some(Email.create('john.doe@mail.com').unwrap()),
     phone: Some('1234567890'),
   };
 

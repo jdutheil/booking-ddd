@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Contact } from '@src/domains/contacts/contact/domain/contact.entity';
-import { ContactEmail } from '@src/domains/contacts/contact/domain/value-objects/contact-email';
 import { ContactName } from '@src/domains/contacts/contact/domain/value-objects/contact-name';
+import { Email } from '@src/domains/contacts/shared/domain/value-objects/email';
 import { EntityID } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { Some } from 'oxide.ts';
@@ -35,7 +35,7 @@ describe('ContactInMemoryRepository', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
 
@@ -58,14 +58,12 @@ describe('ContactInMemoryRepository', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
       await repository.save(contact);
 
-      contact.updateEmail(
-        Some(ContactEmail.create('another@mail.com').unwrap()),
-      );
+      contact.updateEmail(Some(Email.create('another@mail.com').unwrap()));
       const contactsCount = repository.contacts.length;
 
       // Act
@@ -90,7 +88,7 @@ describe('ContactInMemoryRepository', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
       await repository.save(contact);
@@ -172,7 +170,7 @@ describe('ContactInMemoryRepository', () => {
             lastName: Some('Doe'),
           }).unwrap(),
         ),
-        email: Some(ContactEmail.create('john.doe@mail.com').unwrap()),
+        email: Some(Email.create('john.doe@mail.com').unwrap()),
         phone: Some('123456789'),
       }).unwrap();
       await repository.save(contact);

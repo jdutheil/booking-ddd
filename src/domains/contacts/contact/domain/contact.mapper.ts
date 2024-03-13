@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd';
 import { None, Some } from 'oxide.ts';
+import { Email } from '../../shared/domain/value-objects/email';
 import {
   ContactModel,
   contactSchema,
 } from '../infrastructure/persistence/contact.model';
 import { Contact } from './contact.entity';
 import { ContactError } from './contact.errors';
-import { ContactEmail } from './value-objects/contact-email';
 import { ContactName } from './value-objects/contact-name';
 
 @Injectable()
@@ -25,9 +25,7 @@ export class ContactMapper implements Mapper<Contact, ContactModel> {
                 }).unwrap(),
               )
             : None,
-        email: record.email
-          ? Some(ContactEmail.create(record.email).unwrap())
-          : None,
+        email: record.email ? Some(Email.create(record.email).unwrap()) : None,
         phone: record.phone ? Some(record.phone) : None,
       },
       record.id,

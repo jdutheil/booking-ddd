@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@src/infrastructure/prisma/prisma.service';
 import { Option } from 'oxide.ts';
-import { Organizer } from '../../domain/organizer.entity';
+import { Organizer, OrganizerType } from '../../domain/organizer.entity';
 import { OrganizerError } from '../../domain/organizer.errors';
 import { OrganizerMapper } from '../../domain/organizer.mapper';
 import { OrganizerRepository } from './organizer.repository';
@@ -20,19 +20,46 @@ export class OrganizerPrismaRepository implements OrganizerRepository {
     try {
       const organizerExists = await this.idExists(organizer.id);
       if (organizerExists) {
-        await this.prisma.organizer.update({
+        // Remove emails / phones to recreate them
+        // TODO : find a more optimized way ?
+        const removeExistingEmails = this.prisma.organizerEmail.deleteMany({
+          where: { organizerId: organizer.id },
+        });
+        const removeExistingPhones = this.prisma.organizerPhone.deleteMany({
+          where: { organizerId: organizer.id },
+        });
+
+        const update = this.prisma.organizer.update({
           where: { id: organizer.id },
           data: {
             ...record,
+            emails: {
+              create: organizer.emails.map((email) => ({ value: email.value })),
+            },
+            phones: {
+              create: organizer.phones.map((phone) => ({ value: phone })),
+            },
             contacts: {
               connect: organizer.contactIds.map((id) => ({ id })),
             },
           },
         });
+
+        await this.prisma.$transaction([
+          removeExistingEmails,
+          removeExistingPhones,
+          update,
+        ]);
       } else {
         await this.prisma.organizer.create({
           data: {
             ...record,
+            emails: {
+              create: organizer.emails.map((email) => ({ value: email.value })),
+            },
+            phones: {
+              create: organizer.phones.map((phone) => ({ value: phone })),
+            },
             contacts: {
               connect: organizer.contactIds.map((id) => ({ id })),
             },
@@ -56,9 +83,19 @@ export class OrganizerPrismaRepository implements OrganizerRepository {
   async findAllForBooker(bookerId: string): Promise<Organizer[]> {
     const organizers = await this.prisma.organizer.findMany({
       where: { bookerId },
+      include: {
+        emails: true,
+        phones: true,
+        contacts: true,
+      },
     });
 
-    return organizers.map((organizer) => this.mapper.toDomain(organizer));
+    return organizers.map((organizer) =>
+      this.mapper.toDomain({
+        ...organizer,
+        type: organizer.type as OrganizerType,
+      }),
+    );
   }
 
   async findOneById(id: string): Promise<Option<Organizer>> {
@@ -67,6 +104,11 @@ export class OrganizerPrismaRepository implements OrganizerRepository {
       include: { contacts: true },
     });
 
-    return Option.from(organizerRecord).map(this.mapper.toDomain);
+    return Option.from(organizerRecord).map((record) =>
+      this.mapper.toDomain({
+        ...record,
+        type: record.type as OrganizerType,
+      }),
+    );
   }
 }

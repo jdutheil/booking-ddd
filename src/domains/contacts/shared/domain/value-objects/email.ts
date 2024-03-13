@@ -1,34 +1,32 @@
-// TODO : move in shared !
-
 import { Guard } from '@src/libs/core/guard';
 import { ValueObject } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
-import { OrganizerError } from '../organizer.errors';
+import { InvalidEmailError } from '../errors';
 
-export interface OrganizerEmailProps {
+export interface EmailProps {
   value: string;
 }
 
-export class OrganizerEmail extends ValueObject<OrganizerEmailProps> {
-  private constructor(props: OrganizerEmailProps) {
-    super(props);
-  }
-
+export class Email extends ValueObject<EmailProps> {
   get value(): string {
     return this.props.value;
   }
 
-  public static create(email: string): Result<OrganizerEmail, OrganizerError> {
+  private constructor(props: EmailProps) {
+    super(props);
+  }
+
+  public static create(email: string): Result<Email, InvalidEmailError> {
     const emailResult = Guard.againstNullOrUndefined(email, 'email');
     if (emailResult.isErr()) {
-      return Err(new OrganizerError(emailResult.unwrapErr()));
+      return Err(new InvalidEmailError(emailResult.unwrapErr()));
     }
 
     if (!this.isValidEmail(email)) {
-      return Err(new OrganizerError('Invalid email'));
+      return Err(new InvalidEmailError('Invalid email'));
     }
 
-    return Ok(new OrganizerEmail({ value: this.format(email) }));
+    return Ok(new Email({ value: this.format(email) }));
   }
 
   private static isValidEmail(email: string): boolean {

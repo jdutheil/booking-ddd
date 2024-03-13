@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Mapper } from '@src/libs/ddd';
+import { Email } from '../../shared/domain/value-objects/email';
 import {
   OrganizerModel,
   organizerSchema,
@@ -14,6 +15,11 @@ export class OrganizerMapper implements Mapper<Organizer, OrganizerModel> {
       {
         bookerId: record.bookerId,
         name: record.name,
+        type: record.type,
+        emails:
+          record.emails?.map((email) => Email.create(email.value).unwrap()) ??
+          [],
+        phones: record.phones?.map((phone) => phone.value) ?? [],
         contactIds: record.contacts?.map((contact) => contact.id) ?? [],
       },
       record.id,
@@ -35,6 +41,9 @@ export class OrganizerMapper implements Mapper<Organizer, OrganizerModel> {
       id: entity.id,
       bookerId: entity.bookerId,
       name: entity.name,
+      type: entity.type,
+      emails: entity.emails.map((email) => ({ value: email.value })),
+      phones: entity.phones.map((phone) => ({ value: phone })),
     };
 
     return organizerSchema.parse(record);
