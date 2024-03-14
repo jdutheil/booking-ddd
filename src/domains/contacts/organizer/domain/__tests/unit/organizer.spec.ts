@@ -114,4 +114,15 @@ describe('Organizer Entity', () => {
     // Assert
     expect(organizer.props.emails).toHaveLength(2);
   });
+
+  it('should not add a phone if it already exists', async () => {
+    // Arrange
+    const organizer = Organizer.create(organizerProps).unwrap();
+
+    // Act
+    organizer.addPhone('+33612345678');
+
+    // Assert
+    expect(organizer.props.phones).toHaveLength(1);
+  });
 });

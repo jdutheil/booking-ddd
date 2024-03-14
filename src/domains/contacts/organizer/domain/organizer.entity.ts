@@ -69,11 +69,13 @@ export class Organizer extends AggregateRoot<OrganizerProps> {
   }
 
   public addPhone(phone: string): void {
-    this.props.phones.forEach((existingPhone) => {
-      if (existingPhone === phone) {
-        return;
-      }
+    const phoneExists = this.props.phones.some((existingPhone) => {
+      return existingPhone === phone;
     });
+    if (phoneExists) {
+      return;
+    }
+
     this.props.phones.push(phone);
   }
 
