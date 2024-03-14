@@ -24,11 +24,14 @@ export class CreateOrganizerService implements ICommandHandler {
   async execute(
     command: CreateOrganizerCommand,
   ): Promise<Result<EntityID, OrganizerError>> {
-    const { bookerId, name, contactIds } = command;
+    const { bookerId, name, type, emails, phones, contactIds } = command;
 
     const organizerResult = await Organizer.create({
       bookerId,
       name,
+      type,
+      emails,
+      phones,
       contactIds,
     });
 

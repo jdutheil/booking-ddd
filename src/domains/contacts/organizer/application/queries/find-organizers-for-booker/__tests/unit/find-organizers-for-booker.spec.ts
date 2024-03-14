@@ -1,5 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Organizer } from '@src/domains/contacts/organizer/domain/organizer.entity';
+import {
+  Organizer,
+  OrganizerType,
+} from '@src/domains/contacts/organizer/domain/organizer.entity';
 import { OrganizerInMemoryRepository } from '@src/domains/contacts/organizer/infrastructure/persistence/organizer.in-memory.repository';
 import { ORGANIZER_REPOSITORY } from '@src/domains/contacts/organizer/infrastructure/persistence/organizer.repository';
 import { randomUUID } from 'crypto';
@@ -46,11 +49,17 @@ describe('Find Organizers for Booker', () => {
       Organizer.create({
         bookerId,
         name: 'Organizer 1',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       }).unwrap(),
       Organizer.create({
         bookerId,
         name: 'Organizer 2',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       }).unwrap(),
     ];
@@ -71,16 +80,25 @@ describe('Find Organizers for Booker', () => {
       Organizer.create({
         bookerId,
         name: 'Organizer 1',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       }).unwrap(),
       Organizer.create({
         bookerId,
         name: 'Organizer 2',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       }).unwrap(),
       Organizer.create({
         bookerId: randomUUID(),
         name: 'Other organizer',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       }).unwrap(),
     ];

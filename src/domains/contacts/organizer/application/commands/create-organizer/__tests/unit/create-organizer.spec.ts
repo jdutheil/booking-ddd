@@ -1,6 +1,7 @@
 import { EventEmitterModule, OnEvent } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrganizerCreatedEvent } from '@src/domains/contacts/organizer/domain/events/organizer-created.event';
+import { OrganizerType } from '@src/domains/contacts/organizer/domain/organizer.entity';
 import { OrganizerInMemoryRepository } from '@src/domains/contacts/organizer/infrastructure/persistence/organizer.in-memory.repository';
 import { ORGANIZER_REPOSITORY } from '@src/domains/contacts/organizer/infrastructure/persistence/organizer.repository';
 import { randomUUID } from 'node:crypto';
@@ -51,6 +52,9 @@ describe('Create Organizer Service', () => {
       const command = new CreateOrganizerCommand({
         bookerId: randomUUID(),
         name: 'Organizer Name',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       });
       const organizersCount = repository.organizers.length;
@@ -72,6 +76,9 @@ describe('Create Organizer Service', () => {
       const command = new CreateOrganizerCommand({
         bookerId: randomUUID(),
         name: '',
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       });
 
@@ -87,6 +94,9 @@ describe('Create Organizer Service', () => {
       const command = new CreateOrganizerCommand({
         bookerId: randomUUID(),
         name: 'a'.repeat(256),
+        type: OrganizerType.OTHER,
+        emails: [],
+        phones: [],
         contactIds: [],
       });
 
