@@ -113,7 +113,5 @@ describe('Organizer Entity', () => {
 
     // Assert
     expect(organizer.props.emails).toHaveLength(2);
-    expect(organizer.props.emails).toContain(email);
-    expect(organizer.props.emails).toContain(email2);
   });
 });

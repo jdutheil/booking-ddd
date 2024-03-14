@@ -48,11 +48,13 @@ export class Organizer extends AggregateRoot<OrganizerProps> {
   }
 
   public addEmail(email: Email): void {
-    this.props.emails.forEach((existingEmail) => {
-      if (existingEmail.equals(email)) {
-        return;
-      }
+    const emailExists = this.props.emails.some((existingEmail) => {
+      return existingEmail.equals(email);
     });
+    if (emailExists) {
+      return;
+    }
+
     this.props.emails.push(email);
   }
 
