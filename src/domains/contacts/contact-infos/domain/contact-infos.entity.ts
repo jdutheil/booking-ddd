@@ -9,6 +9,6 @@ export type Phones = string[];
 export interface ContactInfosProps {
   emails: Emails;
   phones: Phones;
-  website: Website;
+  website: Option<Website>;
   address: Option<Address>;
 }
