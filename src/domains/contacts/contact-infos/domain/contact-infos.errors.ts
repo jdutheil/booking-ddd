@@ -8,3 +8,12 @@ export class InvalidEmailError extends ExceptionBase {
     super(InvalidEmailError.message, cause);
   }
 }
+
+export class InvalidWebsiteError extends ExceptionBase {
+  static readonly message: string = 'Invalid website';
+  public readonly code: string = 'WEBSITE.INVALID';
+
+  constructor(cause?: unknown) {
+    super(InvalidWebsiteError.message, cause);
+  }
+}

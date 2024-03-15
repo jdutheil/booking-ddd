@@ -1,7 +1,7 @@
 import { Guard } from '@src/libs/core/guard';
 import { ValueObject } from '@src/libs/ddd';
 import { Err, Ok, Result } from 'oxide.ts';
-import { InvalidEmailError } from '../errors';
+import { InvalidEmailError } from '../contact-infos.errors';
 
 export interface EmailProps {
   value: string;
