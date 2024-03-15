@@ -16,6 +16,22 @@ export interface ContactInfosProps {
 }
 
 export class ContactInfos extends Entity<ContactInfosProps> {
+  get emails(): Emails {
+    return this.props.emails;
+  }
+
+  get phones(): Phones {
+    return this.props.phones;
+  }
+
+  get website(): Option<Website> {
+    return this.props.website;
+  }
+
+  get address(): Option<Address> {
+    return this.props.address;
+  }
+
   private constructor(props: ContactInfosProps, id?: EntityID) {
     super(props, id);
   }
