@@ -15,6 +15,22 @@ export interface AddressProps {
 }
 
 export class Address {
+  get street(): Option<Street> {
+    return this.props.street;
+  }
+
+  get city(): City {
+    return this.props.city;
+  }
+
+  get zipCode(): ZipCode {
+    return this.props.zipCode;
+  }
+
+  get country(): Option<Country> {
+    return this.props.country;
+  }
+
   private constructor(public props: AddressProps) {}
 
   static create(props: AddressProps): Result<Address, AddressError> {
