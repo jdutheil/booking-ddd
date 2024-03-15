@@ -26,3 +26,12 @@ export class AddressError extends ExceptionBase {
     super(AddressError.message, cause);
   }
 }
+
+export class ContactInfosError extends ExceptionBase {
+  static readonly message: string = 'Invalid contact infos';
+  public readonly code: string = 'CONTACT_INFOS.INVALID';
+
+  constructor(cause?: unknown) {
+    super(ContactInfosError.message, cause);
+  }
+}
