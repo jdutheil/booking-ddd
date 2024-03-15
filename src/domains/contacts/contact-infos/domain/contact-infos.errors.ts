@@ -17,3 +17,12 @@ export class InvalidWebsiteError extends ExceptionBase {
     super(InvalidWebsiteError.message, cause);
   }
 }
+
+export class AddressError extends ExceptionBase {
+  static readonly message: string = 'Invalid address';
+  public readonly code: string = 'ADDRESS.INVALID';
+
+  constructor(cause?: unknown) {
+    super(AddressError.message, cause);
+  }
+}

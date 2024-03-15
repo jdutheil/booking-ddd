@@ -1,4 +1,4 @@
-import { Email } from '../value-objects/email';
+import { Email } from '../../value-objects/email';
 
 describe('Email Value Object', () => {
   it('should return an error if email is not valid', () => {
