@@ -74,6 +74,7 @@ describe('Create Organizer', () => {
     it('should create a new organizer', async () => {
       const payload = {
         name: 'Organizer name',
+        type: 'OTHER',
       };
       const organizersCount = await prisma.organizer.count();
 
@@ -85,6 +86,63 @@ describe('Create Organizer', () => {
       expect(status).toEqual(HttpStatus.CREATED);
       expect(body.id).not.toBeNull();
       expect(await prisma.organizer.count()).toEqual(organizersCount + 1);
+    });
+
+    it('should return BAD_REQUEST if name is empty', async () => {
+      const payload = {
+        name: '',
+        type: 'OTHER',
+      };
+
+      const { status } = await request(app.getHttpServer())
+        .post('/v1/organizers')
+        .set('Authorization', `Bearer ${authenticationToken}`)
+        .send(payload);
+
+      expect(status).toEqual(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should return BAD_REQUEST if type is empty', async () => {
+      const payload = {
+        name: 'Organizer name',
+        type: '',
+      };
+
+      const { status } = await request(app.getHttpServer())
+        .post('/v1/organizers')
+        .set('Authorization', `Bearer ${authenticationToken}`)
+        .send(payload);
+
+      expect(status).toEqual(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should return BAD_REQUEST if type is invalid', async () => {
+      const payload = {
+        name: 'Organizer name',
+        type: 'INVALID_TYPE',
+      };
+
+      const { status } = await request(app.getHttpServer())
+        .post('/v1/organizers')
+        .set('Authorization', `Bearer ${authenticationToken}`)
+        .send(payload);
+
+      expect(status).toEqual(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should return BAD_REQUEST if an email is invalid', async () => {
+      const payload = {
+        name: 'Organizer name',
+        type: 'OTHER',
+        emails: ['invalid-email'],
+      };
+
+      const { status } = await request(app.getHttpServer())
+        .post('/v1/organizers')
+        .set('Authorization', `Bearer ${authenticationToken}`)
+        .send(payload);
+
+      expect(status).toEqual(HttpStatus.BAD_REQUEST);
     });
   });
 });

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { BookerModule } from '@src/modules/booker/booker.module';
+import { BookerModule } from '@src/domains/booker/booker.module';
+import { ContactModule } from './domains/contacts/contact/contact.module';
+import { OrganizerModule } from './domains/contacts/organizer/organizer.module';
 import { RestApiModule } from './infrastructure/rest-api/rest-api.module';
-import { ContactModule } from './modules/contact/contact.module';
-import { OrganizerModule } from './modules/organizer/organizer.module';
 
 @Module({
   imports: [

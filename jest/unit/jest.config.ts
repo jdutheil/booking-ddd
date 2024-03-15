@@ -15,7 +15,7 @@ const config: Config = {
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/$1',
-    '^@modules/(.*)$': '<rootDir>/modules/$1',
+    '^@domains/(.*)$': '<rootDir>/domains/$1',
     '^@config/(.*)$': '<rootDir>/configs/$1',
     '^@libs/(.*)$': '<rootDir>/libs/$1',
   },

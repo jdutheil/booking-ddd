@@ -37,17 +37,44 @@ model Booker {
   contacts Contact[]
 }
 
-// Contact domain
+// Contacts domain
+
+enum OrganizerType {
+  CITY_HALL
+  TOURIST_OFFICE
+  ASSOCIATION
+  OTHER
+}
+
+model OrganizerEmail {
+  id String @id @default(uuid())
+  value String
+
+  organizer Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  organizerId String
+}
+
+model OrganizerPhone {
+  id String @id @default(uuid())
+  value String
+
+  organizer Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  organizerId String
+}
 
 model Organizer {
   id String @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name String
-
   booker Booker @relation(fields: [bookerId], references: [id], onDelete: Cascade)
   bookerId String
+
+  name String
+  type OrganizerType @default(OTHER)
+
+  emails OrganizerEmail[]
+  phones OrganizerPhone[]
 
   contacts Contact[]
 }

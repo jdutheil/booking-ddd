@@ -7,12 +7,12 @@ import {
 import { QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { routesV1 } from '@src/configs/routes';
+import { FindOrganizersForBookerQuery } from '@src/domains/contacts/organizer/application/queries/find-organizers-for-booker/find-organizers-for-booker.query';
+import { Organizer } from '@src/domains/contacts/organizer/domain/organizer.entity';
+import { OrganizerError } from '@src/domains/contacts/organizer/domain/organizer.errors';
 import { Auth } from '@src/infrastructure/rest-api/authentication/infrastructure/security/auth.decorator';
 import { BookerIdFromUserIdPipe } from '@src/infrastructure/rest-api/authentication/infrastructure/security/booker-id-from-user-id.pipe';
 import { EntityID } from '@src/libs/ddd';
-import { FindOrganizersForBookerQuery } from '@src/modules/organizer/application/queries/find-organizers-for-booker/find-organizers-for-booker.query';
-import { Organizer } from '@src/modules/organizer/domain/organizer.entity';
-import { OrganizerError } from '@src/modules/organizer/domain/organizer.errors';
 import { Result } from 'oxide.ts';
 import { OrganizerResponse, OrganizersResponse } from './organizers.response';
 

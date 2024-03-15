@@ -5,7 +5,7 @@ module.exports = {
 
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/src/$1',
-    '^@modules/(.*)$': '<rootDir>/src/modules/$1',
+    '^@domains/(.*)$': '<rootDir>/src/domains/$1',
     '^@config/(.*)$': '<rootDir>/src/configs/$1',
     '^@libs/(.*)$': '<rootDir>/src/libs/$1',
   },
