@@ -1,8 +1,8 @@
-import { Email } from '@clerk/clerk-sdk-node';
 import { Entity, EntityID } from '@src/libs/ddd';
 import { None, Ok, Option, Result } from 'oxide.ts';
 import { ContactInfosError } from './contact-infos.errors';
 import { Address } from './value-objects/address';
+import { Email } from './value-objects/email';
 import { Website } from './value-objects/website';
 
 export type Emails = Email[];
@@ -18,6 +18,23 @@ export interface ContactInfosProps {
 export class ContactInfos extends Entity<ContactInfosProps> {
   get emails(): Emails {
     return this.props.emails;
+  }
+
+  public addEmail(email: Email): void {
+    const emailExists = this.props.emails.some((existingEmail) => {
+      return existingEmail.equals(email);
+    });
+    if (emailExists) {
+      return;
+    }
+
+    this.props.emails.push(email);
+  }
+
+  public removeEmail(email: Email): void {
+    this.props.emails = this.props.emails.filter((existingEmail) => {
+      return !existingEmail.equals(email);
+    });
   }
 
   get phones(): Phones {
